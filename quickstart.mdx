@@ -1,0 +1,100 @@
+---
+title: "TRACTIAN Quick Start: From Zero to Live Sensor Data"
+sidebarTitle: "Quick Start"
+description: "Set up TRACTIAN, install your first SmartTrac sensor, and start reviewing AI-generated fault insights for your machines in four straightforward steps."
+---
+
+This guide walks you through everything you need to go from a blank TRACTIAN account to live sensor data and AI-generated fault insights on your first machine. By the end, you will have your asset hierarchy configured, a SmartTrac sensor streaming data to the platform, and a clear view of how to act on the insights TRACTIAN surfaces. The whole process typically takes less than a day of hands-on effort.
+
+<Steps>
+
+  <Step title="Create your account">
+    Go to [app.tractian.com](https://app.tractian.com) and sign up for your organization. During registration, you will be asked for:
+
+    - **Company name** — used to name your top-level organization in the platform.
+    - **Number of assets** — helps TRACTIAN size your initial configuration and hardware recommendation.
+    - **Primary contact** — the administrator who receives setup instructions and manages user invitations.
+
+    If your organization is provisioned through an enterprise agreement, your account manager will send you a direct invitation link instead. Reach out to your TRACTIAN account manager if you have not received it within one business day of signing your contract.
+
+    <Tip>
+      You can invite additional users — technicians, reliability engineers, and managers — from **Settings → Users** at any time after your account is created. Each user role has its own permission scope.
+    </Tip>
+  </Step>
+
+  <Step title="Build your asset tree">
+    TRACTIAN organizes equipment in a three-level hierarchy: **Plant → Area → Machine**. Setting this up before you install sensors ensures every data point is immediately tied to the right asset context.
+
+    **To create your hierarchy manually:**
+
+    1. Navigate to **Assets** in the left sidebar.
+    2. Select **+ New Plant** and enter your facility name and location.
+    3. Inside the plant, select **+ New Area** to define production zones, lines, or departments.
+    4. Inside each area, select **+ New Machine** and fill in the asset details (name, category, criticality rating, manufacturer, and model).
+
+    **To import assets in bulk:**
+
+    Download the TRACTIAN asset import template from **Assets → Import**, fill in your equipment list following the column guide, and upload the completed file. The platform validates the sheet and flags any errors before committing the import.
+
+    <Note>
+      You can also build and edit your asset tree from the TRACTIAN mobile app. This is especially useful when walking the floor during initial setup — you can photograph the nameplate and attach it directly to the asset record on the spot.
+    </Note>
+  </Step>
+
+  <Step title="Install and pair your sensor">
+    With your asset tree in place, it is time to mount a SmartTrac sensor on your first machine and connect it to the platform.
+
+    **What you need:**
+
+    - One SmartTrac sensor (shipped with your hardware order)
+    - One TRACTIAN Gateway, powered and connected to your site network or cellular
+    - The TRACTIAN mobile app (iOS or Android)
+
+    **Installation steps:**
+
+    1. **Mount the sensor** — Attach the SmartTrac to the machine housing at the measurement point specified in your sensor placement guide. Use the magnetic base for quick mounting on ferrous surfaces, or the adhesive pad / threaded stud for permanent installation.
+    2. **Open the mobile app** and navigate to the machine's asset record in your tree.
+    3. Tap **Add Sensor**, then select **Pair new SmartTrac**.
+    4. Hold the phone near the sensor — the app discovers it automatically via Bluetooth and walks you through the pairing sequence.
+    5. Confirm the Gateway assignment. The sensor will begin streaming vibration, temperature, and RPM data within a few minutes of pairing.
+
+    <Warning>
+      Ensure the mounting surface is clean, flat, and free of paint or rust before attaching the sensor. Poor surface contact is the leading cause of measurement noise and can reduce AI detection accuracy.
+    </Warning>
+  </Step>
+
+  <Step title="Review your first insights">
+    TRACTIAN's AI engine begins analyzing your sensor data immediately and typically produces its first fault-likelihood assessments within **24 hours** of receiving a clean baseline signal.
+
+    **To view your insights:**
+
+    1. In the web app at [app.tractian.com](https://app.tractian.com), go to **Monitoring → Insights** in the left sidebar.
+    2. Select the machine you just equipped. You will see an asset health score, a timeline of signal readings, and a list of any detected anomalies ranked by severity.
+    3. Click any insight to open the full fault diagnosis — it includes the failure mode identified, the supporting spectral evidence, and a recommended corrective action.
+
+    **To act on an insight:**
+
+    - Select **Create Work Order** directly from the fault diagnosis card to generate a maintenance task pre-filled with the asset, fault description, and recommended action.
+    - Assign the work order to a technician, set a due date, and track its progress from **CMMS → Work Orders**.
+
+    <Tip>
+      Set up notification rules in **Settings → Alerts** so the right team members are automatically notified by push, email, SMS, or WhatsApp when a new high-severity insight is detected — no need to check the dashboard manually.
+    </Tip>
+  </Step>
+
+</Steps>
+
+<Note>
+  If you run into any issues during hardware installation — damaged sensors, Gateway connectivity problems, or pairing failures — contact your TRACTIAN Customer Success representative directly. You can also reach the hardware support team from within the app by going to **Help → Contact Support**.
+</Note>
+
+## What's next
+
+<CardGroup cols={2}>
+  <Card title="Sensor Setup Guide" icon="sensor" href="/monitoring/sensors-setup">
+    Learn advanced sensor placement strategies, multi-point configurations, and how to calibrate measurement parameters for specific machine types.
+  </Card>
+  <Card title="Building Your Asset Tree" icon="sitemap" href="/assets/asset-tree">
+    Deep-dive into asset hierarchies, criticality scoring, FMEA libraries, and how to link assets to maintenance plans and lubrication routes.
+  </Card>
+</CardGroup>

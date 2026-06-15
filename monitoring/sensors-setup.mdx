@@ -1,0 +1,150 @@
+---
+title: "Install and Configure TRACTIAN SmartTrac Sensors"
+sidebarTitle: "Sensor Setup"
+description: "Step-by-step guide to mount TRACTIAN SmartTrac IoT sensors, pair them to a Gateway, and start streaming machine data to the platform."
+---
+
+SmartTrac sensors continuously monitor your machines by measuring vibration, temperature, and RPM — streaming data to TRACTIAN's AI engine around the clock. This guide walks you through physically mounting a SmartTrac sensor, pairing it to a Gateway Ultra, and verifying that live data is flowing into your asset dashboard.
+
+---
+
+## What you'll need
+
+Before you begin, make sure you have the following ready:
+
+- **SmartTrac sensor** — confirm the serial number label is intact and readable
+- **Gateway Ultra** — powered on and connected to your network
+- **TRACTIAN mobile app** — installed on your iOS or Android device and signed in
+- **Asset created in the platform** — the machine must already exist in your asset tree before you can attach a sensor
+
+<Note>
+  If the asset doesn't exist yet, create it under **Assets > Add Asset** before continuing. A sensor cannot be paired to a machine that hasn't been registered in the platform.
+</Note>
+
+---
+
+## Installing your SmartTrac sensor
+
+<Steps>
+  <Step title="Mount the sensor on the machine">
+    Attach the SmartTrac sensor to the machine casing as close as possible to the bearing housing. The mounting surface must be **flat, clean, and free of paint or corrosion** to ensure proper vibration transmission.
+
+    - Use the **magnetic base** for ferrous surfaces — press firmly until fully seated
+    - Use the **adhesive mounting pad** or **stud mount** for non-ferrous or painted surfaces
+    - Orient the sensor so the axis label aligns with the primary measurement direction (radial or axial)
+
+    <Warning>
+      Never mount the sensor on a flexible panel, rubber-lined surface, or a location with direct exposure to cutting fluid jets. Poor mounting contact is the leading cause of inaccurate readings.
+    </Warning>
+  </Step>
+
+  <Step title="Power on and check the LED indicator">
+    SmartTrac sensors are powered by a long-life industrial battery — no wiring required. After mounting, press and hold the side button for **2 seconds** to power on the device.
+
+    Check the LED status:
+
+    | LED behavior | Status |
+    |---|---|
+    | **Solid green (3 sec)** | Powered on, ready to pair |
+    | **Slow blue blink** | Searching for Gateway |
+    | **Fast blue blink** | Connected, transmitting data |
+    | **Red blink** | Error — check battery or proximity to Gateway |
+
+  </Step>
+
+  <Step title="Open the TRACTIAN app and select your asset">
+    In the TRACTIAN mobile app, navigate to the **Assets** tab and tap the machine you want to monitor. On the asset detail screen, tap **Add Sensor**.
+  </Step>
+
+  <Step title="Scan the QR code or enter the serial number">
+    Point your phone camera at the QR code printed on the SmartTrac sensor label. The app will automatically detect and populate the sensor details.
+
+    If the QR code is damaged or unreadable, tap **Enter manually** and type in the serial number printed below the barcode.
+  </Step>
+
+  <Step title="Confirm pairing and verify data streaming">
+    The app will connect the sensor to the nearest Gateway Ultra and run a pairing handshake. Once confirmed, you'll see a **"Sensor active"** status on the asset card.
+
+    Return to the asset dashboard on the web platform. Within a few minutes, the sensor tile should show a live temperature reading and the first trend data point. Full AI-powered insights require at least **24 hours of continuous data collection**.
+
+    <Note>
+      Allow a minimum of **24 hours** before expecting your first AI-generated insights. The Auto Diagnosis™ engine needs enough samples to establish a baseline and detect anomalies reliably.
+    </Note>
+  </Step>
+</Steps>
+
+---
+
+## Sampling modes
+
+SmartTrac sensors support three sampling modes. You can configure or change the mode at any time from the asset's **Condition Monitoring** settings.
+
+<Tabs>
+  <Tab title="Auto Diagnosis™">
+    **Auto Diagnosis™** is the default mode and the one most customers use for day-to-day monitoring. The AI engine automatically collects a full vibration sample every **30 minutes**, analyzes it against 35+ fault signatures, and generates insights without any manual action on your part.
+
+    - Runs continuously in the background
+    - No configuration required
+    - Optimized for battery longevity (3–5 year battery life)
+    - Insight alerts are generated automatically when anomalies are detected
+
+    <Tip>
+      Auto Diagnosis™ is the recommended mode for all production assets. Reserve Expert Sample for one-off deep-dive investigations on specific fault hypotheses.
+    </Tip>
+  </Tab>
+
+  <Tab title="Trend Sample">
+    **Trend Sample** captures short-interval velocity and acceleration metrics at a higher frequency than standard Auto Diagnosis™ cycles. Use this mode when you want tighter monitoring on an asset that's showing early warning signs.
+
+    Metrics collected per sample:
+    - **RMS** (Root Mean Square) — overall energy level
+    - **Peak-to-Peak** — maximum displacement range
+    - **Crest Factor** — ratio of peak to RMS, useful for detecting impulsive events like bearing defects
+
+    Trend Sample stores results as time-series data, making it easy to spot gradual degradation trends on the asset dashboard.
+  </Tab>
+
+  <Tab title="Expert Sample">
+    **Expert Sample** gives you full control over sampling parameters for detailed spectral investigation. Use this mode when you need a high-resolution spectrum to confirm or rule out a specific failure mode.
+
+    Configurable parameters:
+
+    | Parameter | Description |
+    |---|---|
+    | **Duration** | Total collection time per sample |
+    | **Resolution** | Frequency resolution of the spectrum (Hz per line) |
+    | **Spectrum interval** | Frequency range to capture |
+    | **Number of lines** | Spectral resolution density |
+
+    Expert Samples are triggered on demand and are not affected by the 30-minute Auto Diagnosis™ schedule. Results appear in the **Spectral Analysis** workspace immediately after collection.
+  </Tab>
+</Tabs>
+
+---
+
+## Sensor placement guidelines
+
+Proper placement is critical to data quality. Follow these guidelines for every installation:
+
+- **Mount near the bearing housing** — the closer to the load zone, the better the fault signal-to-noise ratio
+- **Use a flat, rigid surface** — vibration must transfer directly from the machine structure to the sensor
+- **Avoid loose or indirect mounting** — never place the sensor on a bracket, cover, or panel that isn't part of the main machine structure
+- **Keep clear of heat sources** — do not mount directly above exhaust vents or steam pipes; the sensor is rated to **250°F (121°C)** but sustained heat reduces battery life
+- **Separate sensors per bearing** — on motors and pumps with multiple bearings, use one sensor per bearing housing for precise fault isolation
+- **Maintain Gateway proximity** — ensure the sensor is within **330 ft (100 m)** of a Gateway Ultra if obstacles are present, or up to **3,300 ft (1,000 m)** in line-of-sight environments
+
+---
+
+## Hardware specifications
+
+| Specification | Details |
+|---|---|
+| **Measurements** | Vibration, temperature, RPM, ultrasound |
+| **Vibration sampling rate** | Up to 64 kHz |
+| **Temperature range** | -40°F to 250°F (-40°C to 121°C) |
+| **Battery life** | 3–5 years (typical, Auto Diagnosis™ mode) |
+| **Connectivity** | 4G/LTE via Gateway Ultra |
+| **Range (with obstacles)** | Up to 330 ft (100 m) |
+| **Range (line of sight)** | Up to 3,300 ft (1,000 m) |
+| **Ingress protection** | IP69K |
+| **Hazardous area certifications** | Class 1 Div 1, ATEX, IECEx, NFPA |

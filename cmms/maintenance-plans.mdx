@@ -1,0 +1,99 @@
+---
+title: "Set Up and Schedule Preventive Maintenance Plans in TRACTIAN"
+sidebarTitle: "Maintenance Plans"
+description: Build time-based and meter-based preventive maintenance plans in TRACTIAN to automatically generate work orders and keep assets running reliably.
+---
+
+Maintenance plans let you define recurring maintenance tasks for your assets and have TRACTIAN automatically generate the corresponding work orders on schedule. Instead of manually creating the same work orders week after week, you set the rules once — what to do, how often, and who to assign it to — and the platform handles the rest. Consistent preventive maintenance reduces unplanned downtime by addressing wear, contamination, and degradation before they cause failures.
+
+---
+
+## Plan trigger types
+
+Every maintenance plan is driven by a trigger that determines when the next work order is generated. TRACTIAN supports two trigger types.
+
+<CardGroup cols={2}>
+  <Card title="Time-based" icon="clock">
+    **Schedule maintenance at regular calendar intervals.** Set the plan to repeat every N days, weeks, or months. You can anchor the interval to the date of the last completed work order (rolling schedule) or to a fixed calendar date (fixed schedule).
+
+    Use time-based triggers for tasks that must happen regardless of how much the machine runs — oil changes, visual inspections, filter replacements, or compliance-driven checks.
+  </Card>
+  <Card title="Meter-based" icon="gauge-high">
+    **Schedule maintenance based on operating hours.** Set the plan to trigger every N hours of runtime. TRACTIAN reads runtime data directly from the SmartTrac sensor installed on the asset, so work orders are generated based on actual usage rather than elapsed calendar time.
+
+    Use meter-based triggers for assets with variable utilization — a machine that runs 24/7 needs maintenance far more frequently than one that runs only a few hours per week.
+
+    <Info>
+      Meter-based triggers require a SmartTrac sensor installed and actively transmitting runtime data for the target asset. Contact your TRACTIAN administrator if runtime data is not available for an asset.
+    </Info>
+  </Card>
+</CardGroup>
+
+---
+
+## Creating a maintenance plan
+
+<Steps>
+  <Step title="Navigate to Maintenance Plans">
+    Go to **CMMS** → **Maintenance Plans** in the left sidebar, then click **+ New Plan**.
+  </Step>
+  <Step title="Enter the plan name and description">
+    Give the plan a clear, descriptive name (e.g., "Monthly Gearbox Inspection — Line 3"). Add a description that explains the purpose of the plan so technicians and planners understand the context at a glance.
+  </Step>
+  <Step title="Select the asset or assets">
+    Search for and select the asset or group of assets this plan applies to. A single plan can cover multiple assets of the same type, and TRACTIAN will generate individual work orders for each asset when the trigger fires.
+  </Step>
+  <Step title="Choose the trigger type and interval">
+    Select either **Time-based** or **Meter-based**. Then set the interval:
+    - For time-based: choose the frequency (e.g., every **30 days**) and whether to use a rolling or fixed schedule.
+    - For meter-based: enter the operating-hour threshold (e.g., every **500 hours**).
+  </Step>
+  <Step title="Add the task checklist">
+    Build a step-by-step checklist that the technician will follow when completing the work order. Be specific — include inspection criteria, acceptable measurement ranges, and any safety precautions. A thorough checklist ensures consistency across technicians and shifts.
+  </Step>
+  <Step title="Assign the team and set duration">
+    Select the technician or team responsible for executing this plan's work orders. Enter the estimated duration so TRACTIAN can include this plan in workload capacity planning.
+  </Step>
+  <Step title="Enable the plan">
+    Toggle the plan to **Active** and click **Save**. TRACTIAN immediately calculates the first due date based on your trigger settings and schedules the first work order. From this point forward, work orders are generated automatically — no manual action required.
+  </Step>
+</Steps>
+
+<Warning>
+  Enabling a plan generates the first work order immediately according to your trigger configuration. If you need to delay the first work order, set the plan start date to a future date before activating.
+</Warning>
+
+---
+
+## Plan templates
+
+If you manage multiple similar assets — for example, ten identical pumps or a fleet of compressors — you can save any maintenance plan as a reusable template and apply it to new assets in seconds.
+
+**To save a plan as a template:**
+1. Open any existing maintenance plan.
+2. Click **Save as Template** in the plan's action menu.
+3. Give the template a name and save it to your template library.
+
+**To apply a template to a new asset:**
+1. Go to **CMMS** → **Maintenance Plans** → **+ New Plan**.
+2. Click **Use Template** and select your saved template.
+3. Update the asset assignment and any asset-specific details (such as lubrication type or torque specifications).
+4. Activate the plan.
+
+<Tip>
+  Use templates to enforce standardization across your facility. When your engineering team updates a procedure, update the template once and re-apply it — rather than editing each plan individually.
+</Tip>
+
+---
+
+## Viewing upcoming maintenance
+
+TRACTIAN's maintenance calendar gives you a forward-looking view of all auto-generated work orders across your facility so you can plan labor, order parts in advance, and avoid scheduling conflicts.
+
+- **Calendar view:** Navigate to **CMMS** → **Maintenance Plans** → **Calendar** to see all upcoming work orders plotted by due date. Filter by asset, team, or plan to focus on what matters.
+- **List view:** Switch to list view for a sortable, exportable table of upcoming work orders. Use this view for weekly planning meetings or to share schedules with your team.
+- **Work order queue:** All auto-generated work orders appear in the main **Work Orders** queue as soon as they're created, where they can be reassigned, rescheduled, or escalated like any manually created work order.
+
+<Tip>
+  **Combine preventive and predictive maintenance for the best results.** Use maintenance plans to handle routine, scheduled tasks on a consistent cadence. When TRACTIAN's AI detects an anomaly — such as rising vibration or an unusual temperature spike — let that insight drive a corrective work order outside the plan schedule. This way, your assets receive both the routine care they need and the targeted interventions the data demands.
+</Tip>

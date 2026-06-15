@@ -1,0 +1,100 @@
+---
+title: "Executive Mode: Multi-Plant Dashboard Management"
+sidebarTitle: "Executive Mode"
+description: Use TRACTIAN Executive Mode to organize dashboards into collections, view multiple plants in one screen, and manage favorites across your organization.
+---
+
+Executive Mode gives operations directors and plant managers a single, unified view of every dashboard across all their facilities. Instead of switching between plants or hunting through separate screens, you see your entire portfolio — every display, map, and asset card — organized in a navigable tree that mirrors your operational hierarchy. If you oversee multiple sites or manage a complex plant with dozens of areas, Executive Mode is your command center.
+
+## Dashboard tree
+
+Every node in Executive Mode lives inside a hierarchical tree. The structure flows from the broadest organizational level down to individual dashboard items:
+
+```
+Organization
+└── Company (Plant A)
+│   ├── Collection (Folder: Press Line)
+│   │   ├── Display (Press Line OEE)
+│   │   └── Map (Press Area Floor Plan)
+│   └── Collection (Folder: Utilities)
+│       └── Card (Compressor #2)
+└── Company (Plant B)
+    └── Display (Plant B Overview)
+```
+
+You can nest collections inside other collections to create as many levels of hierarchy as your operation requires. Nodes at the same level can be reordered by dragging them up or down.
+
+## Dashboard types
+
+Each item you add to the tree is one of four node types:
+
+| Type | Icon | Description |
+|---|---|---|
+| **Display** | 📊 | A full template dashboard showing KPIs, trends, and charts for an asset or area |
+| **Map** | 🗺️ | An interactive floor plan with asset pins and live health indicators |
+| **Card** | 🃏 | A focused single-asset card showing current health, last insight, and key metrics |
+| **Collection** | 📁 | A folder that groups any combination of displays, maps, cards, or nested collections |
+
+<Note>
+  You may see a **Legacy BI** node type in older trees migrated from a previous dashboard system. These nodes are read-only and cannot be edited or moved. Contact support if you need to replace a legacy node with a current Display.
+</Note>
+
+## Creating a collection
+
+Collections act as folders to keep your dashboards organized. You need the **Manager** role to create or delete collections.
+
+<Steps>
+  <Step title="Open Executive Mode">
+    From the left navigation, click **Dashboards**, then select **Executive Mode** at the top of the page.
+  </Step>
+  <Step title="Start a new collection">
+    In the tree panel, click the **+ New Collection** button next to the company or parent collection where you want the folder to appear.
+  </Step>
+  <Step title="Name your collection">
+    Type a descriptive name — for example, "Press Line" or "Building 3 — HVAC". Collection names must be unique within the same parent node.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The new collection appears in the tree immediately as an expandable folder. You can start adding dashboards to it right away.
+  </Step>
+</Steps>
+
+## Adding dashboards
+
+Once you have a collection, add dashboards to it using the **+ Add Dashboard** button that appears when you hover over any collection node. Choose the type of dashboard you want to add:
+
+<Tabs>
+  <Tab title="Display">
+    A Display is a full template dashboard. When you click **Add Dashboard → Display**, TRACTIAN shows you a list of available dashboard templates for your assets and areas. Select the template, choose the target asset or area it should reflect, and click **Add**. The display appears inside the collection and renders live data immediately.
+  </Tab>
+  <Tab title="Map">
+    A Map renders an uploaded floor plan image with asset pins overlaid on top. Click **Add Dashboard → Map**, then select the floor plan you want to use (uploaded under Settings → Floor Plans). TRACTIAN places asset pins according to their configured positions. Use maps to give plant visitors and executives a spatial overview of machine health at a glance.
+  </Tab>
+  <Tab title="Card">
+    A Card is a compact, single-asset summary. Click **Add Dashboard → Card**, search for the asset by name or tag, and click **Add**. Cards are ideal for pinning critical machines — a main compressor, a key press, a central chiller — to the top of a collection so their status is always visible without drilling into a full display.
+  </Tab>
+</Tabs>
+
+## Managing your tree
+
+You can rename, move, and delete any node in the tree. Hover over a node to reveal its action menu (the **⋯** icon on the right).
+
+- **Rename** — Click **Rename**, type the new name, and press Enter. The change takes effect immediately across all users.
+- **Move** — Click **Move**, then select the destination collection from the picker. You can also drag any node and drop it onto a different collection to move it in one gesture.
+- **Delete** — Click **Delete** and confirm the prompt. Deleting a collection removes all the dashboards nested inside it. This action cannot be undone.
+- **Reorder** — Drag nodes up or down within the same collection to change their display order. The order is saved automatically.
+
+<Note>
+  Only users with the **Manager** role can create, delete, or move collections. All users — regardless of role — can view the full tree and mark dashboards as favorites. Renaming and reordering nodes also requires the Manager role.
+</Note>
+
+## Favorites
+
+Mark any dashboard as a favorite to pin it to your **Favorites** bar at the top of Executive Mode for instant access.
+
+To mark a favorite, hover over a Display, Map, or Card node and click the **★ star** icon that appears. Starred items show up in the Favorites bar at the top of the page, so you reach them without expanding the tree. Click the star again to remove the dashboard from your favorites.
+
+Favorites are personal — your starred dashboards are visible only to you and do not affect how other users see the tree.
+
+<Tip>
+  If you manage more than five plants, add one high-level Display per site to your favorites. That way you can check the health pulse of every facility in under 10 seconds without navigating the tree at all.
+</Tip>

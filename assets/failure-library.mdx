@@ -1,0 +1,116 @@
+---
+title: "Build a Failure Library for FMEA and Root Cause Analysis"
+sidebarTitle: "Failure Library"
+description: "Record, analyze, and act on equipment failure history in TRACTIAN to build FMEA strategies, run root cause analysis, and prevent repeat failures."
+---
+
+The Failure Library is your organization's institutional memory for equipment failures. Every time a machine breaks down, degrades, or exhibits an unexpected fault, recording that event in TRACTIAN turns a costly disruption into a data point you can act on. Over time, the Failure Library becomes the foundation of your reliability program — revealing which failure modes repeat, which assets are high-risk, and where preventive or predictive strategies will deliver the greatest return.
+
+## Recording a failure event
+
+Record a failure as close to the event as possible so that details, context, and root causes are captured accurately while they're fresh.
+
+<Steps>
+  <Step title="Navigate to the asset's Failure Library">
+    Open the **Asset Tree** and select the affected asset. On the asset detail page, click the **Failure Library** tab.
+  </Step>
+  <Step title="Click Record Failure">
+    Click **+ Record Failure** to open the failure entry form.
+  </Step>
+  <Step title="Fill in the failure details">
+    Complete the following fields:
+
+    - **Failure Mode** — The type of fault (e.g., bearing wear, electrical fault, seal leak, misalignment). Select from the existing catalog or add a new mode if it doesn't exist.
+    - **Affected Component** — The specific component where the failure originated (e.g., drive-end bearing, motor winding, coupling).
+    - **Date and Time** — When the failure was first detected or occurred.
+    - **Description** — A plain-language account of what happened, what was observed, and what the impact was on production.
+  </Step>
+  <Step title="Link to a work order or AI insight (optional)">
+    If a work order was created for this failure, link it here. If TRACTIAN's AI issued an insight before the failure occurred, link that too — this connection is key for measuring how early the platform detected the degradation.
+  </Step>
+  <Step title="Add root cause and corrective action">
+    If the root cause has already been identified, enter it in the **Root Cause** field and describe the corrective action taken. If the investigation is still in progress, leave these fields blank and update the record once the RCA is complete. See [Root Cause Analysis](#root-cause-analysis) below.
+  </Step>
+  <Step title="Save the failure record">
+    Click **Save**. The failure is added to the asset's history and is immediately searchable in the Failure Library.
+  </Step>
+</Steps>
+
+## FMEA (Failure Modes and Effects Analysis)
+
+FMEA is a systematic method for identifying how equipment can fail, what the consequences of each failure mode are, and which preventive actions will most effectively reduce risk. In TRACTIAN, your Failure Library data feeds directly into FMEA strategy building.
+
+**How to use TRACTIAN for FMEA:**
+
+1. Go to **Assets** > **Failure Library** and filter by a specific asset category (e.g., all centrifugal pumps in your plant).
+2. Review the failure modes that have occurred across those assets. Look for modes that appear repeatedly — repetition signals a systemic weakness worth addressing at the strategy level, not just the individual machine level.
+3. For each high-frequency or high-impact failure mode, open the **FMEA Strategy** panel and define:
+   - **Effect** — What happens to production or safety when this failure mode occurs?
+   - **Severity** — How serious is the consequence (1–10)?
+   - **Detection method** — How is this failure currently detected (sensor alert, scheduled inspection, operator observation)?
+   - **Prevention task** — What maintenance or operating change would reduce the likelihood of recurrence?
+4. Assign the prevention task to a recurring inspection or preventive maintenance work order.
+
+<Info>
+  FMEA strategies built in the Failure Library are asset-category-level records. A strategy you define for centrifugal pumps applies across all pumps in your plant, not just the one where the failure originally occurred.
+</Info>
+
+## Root Cause Analysis
+
+The RCA tool in the Failure Library helps you move past symptoms to understand the underlying reason a failure occurred — and prevent it from happening again.
+
+**How to conduct an RCA:**
+
+<Accordion title="Step 1 — Define the symptoms">
+  Start with what you observed: the failure mode, when it first appeared, what changed in the sensor data leading up to it, and what the operational impact was. Be specific — "bearing failure" is a symptom; "inner race fatigue from inadequate lubrication" is a root cause.
+</Accordion>
+
+<Accordion title="Step 2 — Generate possible causes">
+  TRACTIAN pre-populates a list of common causes based on the failure mode and asset category. Add any additional hypotheses your team has. Common cause categories include:
+  - **Mechanical** — imbalance, misalignment, looseness, overload
+  - **Lubrication** — insufficient, contaminated, or incorrect lubricant
+  - **Electrical** — voltage imbalance, soft foot, VFD harmonics
+  - **Process** — cavitation, thermal cycling, corrosive environment
+  - **Maintenance-induced** — incorrect reassembly, wrong replacement part, over-tightened fasteners
+</Accordion>
+
+<Accordion title="Step 3 — Confirm the root cause">
+  Evaluate each possible cause against the evidence: sensor data trends, inspection findings, physical inspection of the failed component, and maintenance history. Mark the confirmed root cause in TRACTIAN and dismiss the hypotheses you've ruled out.
+</Accordion>
+
+<Accordion title="Step 4 — Record the corrective action">
+  Document exactly what was done to address the root cause — not just the repair, but any process, procedure, or maintenance strategy change that prevents recurrence. Link the corrective action to a recurring task if applicable.
+</Accordion>
+
+## Failure history search
+
+The Failure Library is searchable and filterable across your entire asset register, making it easy to find patterns, prepare for audits, or brief new team members on an asset's history.
+
+**Available filters:**
+
+| Filter | Description |
+|---|---|
+| **Asset** | Search by asset name or navigate the tree to a specific machine |
+| **Failure Mode** | Filter by type of fault (bearing, seal, electrical, etc.) |
+| **Component** | Narrow to failures on a specific sub-component |
+| **Date Range** | View failures within a defined time window |
+| **Status** | Filter by Open (root cause pending), In Progress, or Resolved |
+| **Linked Work Order** | Find failures tied to specific work orders |
+
+To export failure history for reporting or external analysis, click **Export** > **CSV** from the Failure Library main view. The export includes all fields and linked records within your selected filters.
+
+## Connecting AI insights to failures
+
+When TRACTIAN's AI issues an insight for an asset — and that insight is later confirmed as a real fault — the platform automatically creates or suggests a failure event in the Failure Library. This connection closes the loop between prediction and outcome.
+
+**What gets linked automatically:**
+
+- The original AI insight (with timestamp, detected anomaly type, and confidence level)
+- The health score trend leading up to the confirmed fault
+- Any inspections performed in response to the insight
+
+This linkage lets you measure **detection lead time** — how many days before the failure occurred did TRACTIAN first flag the anomaly? Over time, this metric demonstrates the value of your predictive maintenance program in concrete terms.
+
+<Tip>
+  Use the Failure Library as evidence when making the case for maintenance investment. Export failure records filtered by asset, sort by production impact, and calculate the total downtime cost for repeat failures. Data showing that a single bearing failure mode has caused five unplanned stoppages in 18 months is far more persuasive to leadership than a general argument for predictive maintenance.
+</Tip>

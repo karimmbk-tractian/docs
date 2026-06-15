@@ -1,0 +1,137 @@
+---
+title: "Spectral Analysis Tools for Vibration Diagnostics"
+sidebarTitle: "Vibration Analysis"
+description: "Use TRACTIAN's spectral analysis workspace to investigate fault frequencies, compare spectra over time, and identify bearing, gear, and rotor failures."
+---
+
+The spectral analysis workspace gives you direct access to the raw frequency-domain data collected by your SmartTrac sensors. While Auto Diagnosis™ handles the day-to-day detection automatically, the workspace is designed for reliability engineers and maintenance technicians who want to go deeper — confirming a suspected fault, investigating an unusual vibration pattern, or building a case for a major repair. No specialized software or external tools are required; everything runs in the TRACTIAN web platform.
+
+---
+
+## Opening the spectral analysis workspace
+
+1. From the main menu, navigate to **Assets** and select the machine you want to investigate
+2. Open the **Condition Monitoring** tab on the asset detail page
+3. Click **Spectral Analysis** to open the workspace
+
+The workspace loads the most recent spectrum collected for that asset. Use the date-time picker in the top bar to navigate to any historical sample in your retention window.
+
+---
+
+## Analysis tools
+
+TRACTIAN provides four precision tools for annotating and interrogating spectra. All tools are accessible from the toolbar above the spectrum chart.
+
+<CardGroup cols={2}>
+  <Card title="Cursor" icon="arrow-pointer" href="/monitoring/vibration-analysis">
+    Click anywhere on the spectrum to place a cursor at that point. The cursor readout displays the exact **frequency (Hz or CPM)** and **amplitude (mm/s, g, or dB)** at that location. Use the cursor to quickly read the value of any peak you want to investigate.
+  </Card>
+  <Card title="Ruler" icon="ruler" href="/monitoring/vibration-analysis">
+    Click and drag between two points on the spectrum to measure the **frequency distance** between them. The ruler is especially useful for confirming harmonic spacing — if you suspect a gear mesh frequency, drag from the fundamental to the first harmonic to verify the interval matches your calculated GMF.
+  </Card>
+  <Card title="Harmonics Selector" icon="wave-square" href="/monitoring/vibration-analysis">
+    Enter a **fundamental frequency** to overlay vertical markers at each harmonic multiple (1×, 2×, 3×, 4×, and so on) across the spectrum. Use this tool to confirm whether elevated peaks align with a known fault frequency such as shaft running speed, BPFI, or GMF.
+  </Card>
+  <Card title="Sidebands" icon="brackets-curly" href="/monitoring/vibration-analysis">
+    Enter a **carrier frequency** to display sideband pair markers spaced symmetrically on either side. Sidebands appear in spectra when a lower-frequency modulating source (such as shaft speed or cage frequency) is amplitude-modulating a higher-frequency carrier. This pattern is a key indicator of bearing defects and gear eccentricity.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Combine the **Harmonics Selector** and **Sidebands** tools simultaneously to fully characterize complex fault patterns. For example, place harmonics at shaft speed (1× RPM) and then add sidebands around a BPFI peak to distinguish between a pure bearing defect and one that's also producing shaft-speed modulation.
+</Tip>
+
+---
+
+## Comparing spectra over time
+
+Trend comparison is one of the most powerful diagnostic techniques available in the workspace. To overlay historical spectra:
+
+1. Open the spectral analysis workspace for your target asset
+2. Click **Compare** in the top toolbar
+3. Select one or more historical dates from the date picker — each spectrum is shown in a distinct color
+4. Use the legend to toggle individual spectra on and off
+
+Look for:
+
+- **New peaks** appearing in recent spectra that weren't present in the baseline
+- **Growing amplitudes** at fault frequencies — a peak that has doubled in amplitude over 30 days indicates a fault that is progressing
+- **Broadband noise floor elevation** — a rising noise floor across a wide frequency range often indicates lubrication degradation or cavitation
+- **Frequency shifts** — a peak migrating to a slightly different frequency can indicate a changing operating condition (speed, load) or a developing looseness fault
+
+<Info>
+  Spectrum retention history depends on your TRACTIAN subscription plan and the sampling mode in use. Expert Samples are stored indefinitely. Auto Diagnosis™ spectra are retained according to your plan's data retention policy.
+</Info>
+
+---
+
+## Fault frequency reference
+
+Every rotating machine produces vibration at predictable frequencies derived from its geometry and operating speed. The table below lists the most common fault frequencies and what elevated amplitudes at those frequencies indicate.
+
+| Fault frequency | Name | Formula | What it indicates |
+|---|---|---|---|
+| **BPFI** | Ball Pass Frequency Inner Race | `(N/2) × RPM × (1 + Bd/Pd × cos α)` | Defect on the bearing inner race |
+| **BPFO** | Ball Pass Frequency Outer Race | `(N/2) × RPM × (1 − Bd/Pd × cos α)` | Defect on the bearing outer race |
+| **BSF** | Ball Spin Frequency | `(Pd/2Bd) × RPM × (1 − (Bd/Pd × cos α)²)` | Rolling element (ball or roller) defect |
+| **FTF** | Fundamental Train Frequency | `(RPM/2) × (1 − Bd/Pd × cos α)` | Cage defect or cage instability |
+| **GMF** | Gear Mesh Frequency | `RPM × Number of teeth` | Gear tooth wear, loading, or eccentricity |
+
+> **Key:** N = number of rolling elements, Bd = ball diameter, Pd = pitch diameter, α = contact angle
+
+<Note>
+  TRACTIAN pre-calculates BPFI, BPFO, BSF, FTF, and GMF for assets where bearing model numbers and gear tooth counts have been entered. Open **Asset Settings > Components** to add this data and enable automatic fault frequency overlays in the spectrum chart.
+</Note>
+
+**How to identify fault frequencies in a spectrum:**
+
+- A **single isolated peak** at a fault frequency suggests an early-stage defect
+- **Harmonics** (2×, 3×, 4× the fault frequency) indicate the defect is more developed and generating periodic impulses
+- **Sidebands** around a fault frequency peak, spaced at shaft speed (1× RPM), indicate that the fault is being modulated by shaft rotation — typical of inner race defects and gear eccentricity
+- A **raised noise floor** across a wide range below a fault frequency can indicate a loss of lubrication film
+
+---
+
+## Data sampling types for spectral analysis
+
+The quality and resolution of the spectrum you analyze depends on which sampling mode was active when the data was collected.
+
+<Tabs>
+  <Tab title="Auto Diagnosis™">
+    Auto Diagnosis™ samples are collected automatically every 30 minutes and are optimized for fault detection efficiency. The AI engine uses these spectra internally, and they are also available for manual review in the workspace.
+
+    **Best for:**
+    - Day-to-day health monitoring and trend tracking
+    - Reviewing what the AI detected and why
+    - Comparing current health against historical baseline
+
+    **Limitations:**
+    - Resolution is fixed and tuned for broad fault detection rather than maximum spectral detail
+    - May not resolve closely spaced fault frequency peaks that are near each other in frequency
+
+    Use Auto Diagnosis™ spectra as your starting point. If you need more detail, trigger an Expert Sample.
+  </Tab>
+
+  <Tab title="Expert Sample">
+    Expert Sample puts you in full control of every collection parameter, letting you tailor the spectrum to your specific diagnostic question.
+
+    **Configurable parameters:**
+
+    | Parameter | What to adjust |
+    |---|---|
+    | **Duration** | Longer duration = better frequency resolution at low frequencies |
+    | **Resolution (Hz/line)** | Lower Hz/line = finer frequency resolution; useful for separating closely spaced peaks |
+    | **Spectrum interval (Fmax)** | Set to just above the highest frequency of interest to maximize line density in your range |
+    | **Number of lines** | More lines = higher resolution across the full frequency range |
+
+    **Best for:**
+    - Confirming or ruling out a specific fault hypothesis
+    - Investigating closely spaced frequency peaks (e.g., separating BPFI from a nearby GMF harmonic)
+    - Collecting high-resolution evidence to include in an RCA report
+    - One-time deep-dive sessions on assets with complex or unusual vibration signatures
+
+    <Tip>
+      When troubleshooting a suspected bearing defect, set your Fmax to at least 10× the BPFI to capture high-order harmonics and any ultrasonic content. A longer duration (10–20 seconds) will give you finer frequency resolution at the lower end of the spectrum where cage and shaft frequencies appear.
+    </Tip>
+  </Tab>
+</Tabs>

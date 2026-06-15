@@ -1,0 +1,357 @@
+---
+title: "Work Orders API: Create and Manage Maintenance Tasks"
+sidebarTitle: "Work Orders"
+description: "REST API for creating, updating, and reading TRACTIAN work orders — create corrective and preventive tasks programmatically and sync status to your CMMS."
+---
+
+The Work Orders API lets you create and manage maintenance tasks directly from your own systems. Whether you're generating corrective tasks from AI insights, importing preventive schedules from an external CMMS, or pushing real-time status updates back to your ERP, this API gives you the control and flexibility to keep every system in sync. Work orders tie together assets, technicians, parts, and timelines in a single auditable record.
+
+## Authentication
+
+All requests require an `Authorization` header with your API key and an `x-company-id` header.
+
+```bash
+Authorization: Bearer {api_key}
+x-company-id: {companyId}
+```
+
+---
+
+## List work orders
+
+`GET /v1/work-orders`
+
+Returns a paginated list of work orders scoped to your company. Use filters to query by status, asset, type, or assignee.
+
+<CodeGroup>
+```bash cURL
+curl -G https://api.tractian.com/v1/work-orders \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d status=open \
+  -d type=predictive \
+  -d page=1 \
+  -d limit=25
+```
+</CodeGroup>
+
+### Query parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number for paginated results.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="25">
+  Number of work orders per page. Maximum is 100.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by status: `open`, `in_progress`, `waiting_for_parts`, `completed`, or `cancelled`.
+</ParamField>
+
+<ParamField query="assetId" type="string">
+  Filter work orders associated with a specific asset.
+</ParamField>
+
+<ParamField query="type" type="string">
+  Filter by work order type: `corrective`, `preventive`, or `predictive`.
+</ParamField>
+
+<ParamField query="assignedTo" type="string">
+  Filter by the user ID of the assigned technician.
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  ISO 8601 start of the `createdAt` date range filter.
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  ISO 8601 end of the `createdAt` date range filter.
+</ParamField>
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "wo-xyz789",
+      "title": "Replace Drive End Bearing - Motor #3",
+      "type": "predictive",
+      "status": "open",
+      "priority": "high",
+      "assetId": "motor-001",
+      "assetName": "Pump Motor #3",
+      "assignedTo": "tech-456",
+      "dueDate": "2025-01-22T00:00:00Z",
+      "estimatedHours": 3.0,
+      "createdAt": "2025-01-15T11:00:00Z",
+      "completedAt": null
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 25,
+    "total": 34,
+    "totalPages": 2
+  }
+}
+```
+
+<ResponseField name="data" type="array">
+  Array of work order summary objects.
+
+  <Expandable title="Work order fields">
+    <ResponseField name="id" type="string">
+      Unique identifier for the work order.
+    </ResponseField>
+    <ResponseField name="title" type="string">
+      Short descriptive title for the maintenance task.
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      Work order type: `corrective`, `preventive`, or `predictive`.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Current status: `open`, `in_progress`, `waiting_for_parts`, `completed`, or `cancelled`.
+    </ResponseField>
+    <ResponseField name="priority" type="string">
+      Task priority: `low`, `medium`, `high`, or `critical`.
+    </ResponseField>
+    <ResponseField name="assetId" type="string">
+      ID of the associated asset.
+    </ResponseField>
+    <ResponseField name="assetName" type="string">
+      Display name of the associated asset.
+    </ResponseField>
+    <ResponseField name="assignedTo" type="string">
+      User ID of the assigned technician. Null if unassigned.
+    </ResponseField>
+    <ResponseField name="dueDate" type="string">
+      ISO 8601 due date for task completion.
+    </ResponseField>
+    <ResponseField name="estimatedHours" type="number">
+      Estimated labor hours to complete the task.
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of work order creation.
+    </ResponseField>
+    <ResponseField name="completedAt" type="string">
+      ISO 8601 timestamp of completion. Null if not yet completed.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Get a work order
+
+`GET /v1/work-orders/:workOrderId`
+
+Returns a single work order with full detail, including checklist items, comments, and parts used.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/work-orders/wo-xyz789 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="workOrderId" type="string" required>
+  The unique ID of the work order.
+</ParamField>
+
+### Response
+
+```json
+{
+  "id": "wo-xyz789",
+  "title": "Replace Drive End Bearing - Motor #3",
+  "description": "Drive end bearing (SKF 6205) shows outer race wear. Replace and re-align shaft.",
+  "type": "predictive",
+  "status": "in_progress",
+  "priority": "high",
+  "assetId": "motor-001",
+  "assetName": "Pump Motor #3",
+  "insightId": "insight-abc123",
+  "assignedTo": "tech-456",
+  "dueDate": "2025-01-22T00:00:00Z",
+  "estimatedHours": 3.0,
+  "actualHours": null,
+  "checklist": [
+    { "id": "chk-1", "label": "Lock out / tag out", "completed": true },
+    { "id": "chk-2", "label": "Remove coupling guard", "completed": true },
+    { "id": "chk-3", "label": "Extract and inspect bearing", "completed": false }
+  ],
+  "parts": [
+    { "partNumber": "SKF-6205-2RS", "description": "Deep groove ball bearing", "quantity": 1 }
+  ],
+  "comments": [
+    {
+      "userId": "tech-456",
+      "text": "Coupling removed. Bearing shows visible pitting on outer race.",
+      "createdAt": "2025-01-16T09:15:00Z"
+    }
+  ],
+  "createdAt": "2025-01-15T11:00:00Z",
+  "completedAt": null
+}
+```
+
+<ResponseField name="insightId" type="string">
+  ID of the TRACTIAN AI insight that triggered this work order, if applicable.
+</ResponseField>
+
+<ResponseField name="checklist" type="array">
+  Ordered list of checklist steps with completion status.
+</ResponseField>
+
+<ResponseField name="parts" type="array">
+  List of parts associated with this work order.
+</ResponseField>
+
+<ResponseField name="comments" type="array">
+  Technician comments and field notes added during execution.
+</ResponseField>
+
+---
+
+## Create a work order
+
+`POST /v1/work-orders`
+
+Creates a new work order. You can link a work order to a TRACTIAN AI insight by including `insightId`, which provides traceability from detected fault to completed repair.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/work-orders \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "title": "Replace Drive End Bearing - Motor #3",
+    "assetId": "motor-001",
+    "type": "predictive",
+    "priority": "high",
+    "insightId": "insight-abc123",
+    "assignedTo": "tech-456",
+    "dueDate": "2025-01-22T00:00:00Z"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="title" type="string" required>
+  Short descriptive title for the work order.
+</ParamField>
+
+<ParamField body="assetId" type="string" required>
+  ID of the asset the work order is associated with.
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  Work order type: `corrective`, `preventive`, or `predictive`.
+</ParamField>
+
+<ParamField body="priority" type="string" required>
+  Task priority: `low`, `medium`, `high`, or `critical`.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Detailed description of the maintenance task and any relevant context.
+</ParamField>
+
+<ParamField body="assignedTo" type="string">
+  User ID of the technician to assign this work order to.
+</ParamField>
+
+<ParamField body="dueDate" type="string">
+  ISO 8601 target completion date.
+</ParamField>
+
+<ParamField body="estimatedHours" type="number">
+  Estimated labor hours for the task.
+</ParamField>
+
+<ParamField body="insightId" type="string">
+  ID of the TRACTIAN AI insight that prompted this work order. Linking insights to work orders provides end-to-end traceability from fault detection to completed maintenance.
+</ParamField>
+
+### Response
+
+Returns the created work order object with a `201 Created` status.
+
+---
+
+## Example: Create a work order from an insight
+
+The following example shows the complete flow of creating a predictive work order directly linked to a TRACTIAN AI insight.
+
+```bash
+curl -X POST https://api.tractian.com/v1/work-orders \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "title": "Replace Drive End Bearing - Motor #3",
+    "assetId": "motor-001",
+    "type": "predictive",
+    "priority": "high",
+    "insightId": "insight-abc123",
+    "assignedTo": "tech-456",
+    "dueDate": "2025-01-22T00:00:00Z"
+  }'
+```
+
+<Tip>
+  Link every predictive work order to its source `insightId`. This creates a closed-loop audit trail — from AI detection to completed repair — and improves TRACTIAN's model accuracy over time.
+</Tip>
+
+---
+
+## Update work order status
+
+`PATCH /v1/work-orders/:workOrderId/status`
+
+Updates the status of a work order. Use this endpoint to push status changes from your CMMS or technician mobile app back into TRACTIAN.
+
+<CodeGroup>
+```bash cURL
+curl -X PATCH https://api.tractian.com/v1/work-orders/wo-xyz789/status \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "status": "completed",
+    "completionNotes": "Drive end bearing replaced with SKF 6205-2RS. Shaft re-aligned. No abnormal vibration on test run.",
+    "actualHours": 2.5
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="workOrderId" type="string" required>
+  The unique ID of the work order to update.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="status" type="string" required>
+  New status value: `open`, `in_progress`, `waiting_for_parts`, `completed`, or `cancelled`.
+</ParamField>
+
+<ParamField body="completionNotes" type="string">
+  Free-text notes describing the work performed. Required when setting status to `completed`.
+</ParamField>
+
+<ParamField body="actualHours" type="number">
+  Actual labor hours spent. Used to track against the original `estimatedHours` for planning accuracy.
+</ParamField>
+
+### Response
+
+Returns the updated work order object with the new status and a populated `completedAt` timestamp if the status is `completed`.

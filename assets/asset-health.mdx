@@ -1,0 +1,106 @@
+---
+title: "Monitor Asset Health Scores and Condition in TRACTIAN"
+sidebarTitle: "Asset Health"
+description: "Understand how TRACTIAN calculates asset health scores, what each health level means, and how to prioritize maintenance using health data."
+---
+
+TRACTIAN continuously analyzes sensor data from your equipment and converts it into a single, easy-to-read health score for each asset. The score combines multiple signal inputs — vibration, temperature, current, and more — and weights them against the asset's criticality level and historical behavior. Rather than forcing you to interpret raw waveforms, the health score gives you an at-a-glance answer to the question every reliability team asks: *which machines need attention right now?*
+
+<Note>
+  Newly installed sensors require **24 to 48 hours** of operation to establish a baseline before health scores become meaningful. During this learning period, you may see fluctuating scores that don't reflect actual equipment condition. Wait until the baseline period completes before acting on health data from a new installation.
+</Note>
+
+## Health levels
+
+TRACTIAN groups health scores into four levels. Each level has a specific color, threshold range, and recommended response.
+
+<CardGroup cols={2}>
+  <Card title="Healthy" icon="circle-check" color="#22c55e" href="/assets/asset-health">
+    **Green** — No faults detected. The asset is operating within normal parameters. No immediate action is required. Continue standard preventive maintenance schedules.
+  </Card>
+  <Card title="Attention" icon="circle-dot" color="#eab308" href="/monitoring/insights-and-diagnosis">
+    **Yellow** — Early indicators of a developing condition. The asset is still operational, but you should increase monitoring frequency and investigate the source of the anomaly before it progresses.
+  </Card>
+  <Card title="Alert" icon="triangle-exclamation" color="#f97316" href="/monitoring/alerts-and-notifications">
+    **Orange** — A fault has been detected. The asset remains operational but is at elevated risk. Schedule maintenance in the near term and review the associated AI insight for recommended corrective actions.
+  </Card>
+  <Card title="Critical" icon="circle-xmark" color="#ef4444" href="/cmms/work-orders">
+    **Red** — Immediate action required. The asset is at serious risk of failure or has already degraded to a point where continued operation may cause further damage. Stop, isolate, or expedite repair depending on your safety and production protocols.
+  </Card>
+</CardGroup>
+
+<Warning>
+  A **Critical** health score does not automatically stop equipment. You are responsible for evaluating whether to continue operation. Always follow your plant's safety procedures and consult your maintenance team before making run/stop decisions.
+</Warning>
+
+## Health dashboard
+
+The health dashboard gives you a plant-wide view of asset condition without having to open individual asset pages.
+
+To access it, go to **Assets** > **Health Dashboard**. You'll see:
+
+- A summary count of assets at each health level across your entire operation
+- A color-coded asset tree so you can spot problem areas at a glance
+- Filter controls to narrow the view by **Area**, **Asset Category**, or **Criticality Level**
+
+Use the filters to focus your attention. For example, filtering by **Critical** assets in the **Compressor Room** helps you quickly determine whether a cluster of alerts is isolated to one area or spread across the plant. You can also sort the asset list by health score to surface the worst-performing equipment first.
+
+<Tip>
+  Pin your most important assets to the dashboard using the **Favorites** feature. Favorited assets always appear at the top of the health list, so you can check them each morning without searching.
+</Tip>
+
+## Asset health history
+
+Every asset maintains a full history of its health scores over time. Viewing this history lets you distinguish between a sudden acute fault and a slow, gradual degradation — both of which require different maintenance responses.
+
+To view health history:
+
+1. Open any asset from the **Asset Tree** or **Health Dashboard**.
+2. Select the **Health** tab on the asset detail page.
+3. Use the time-range selector to view the last 7 days, 30 days, 90 days, or a custom range.
+
+**What to look for:**
+
+- **Sudden drops** from Healthy to Alert or Critical suggest an acute event — a bearing impact, electrical fault, or external damage.
+- **Gradual decline** over weeks or months is typical of wear-based degradation — looseness, imbalance, misalignment developing over time.
+- **Repeated oscillation** between Healthy and Attention may indicate an intermittent condition tied to load cycles or operating mode changes.
+
+Correlate health changes with your work order history. If a score dropped after a maintenance event, the repair may have introduced a new condition worth investigating.
+
+## Comparing assets
+
+TRACTIAN lets you benchmark one asset's health and behavior against similar equipment to determine whether a condition is unique to that machine or part of a broader pattern.
+
+To compare assets:
+
+1. Open an asset's detail page and go to the **Health** tab.
+2. Click **Compare** and select one or more assets of the same category from the same plant.
+3. Overlay their health score trends on the same timeline.
+
+This is especially useful when you have multiple identical motors or pumps running in parallel. If one machine's health score is consistently lower than its peers under the same load conditions, that deviation points to a machine-specific issue rather than a process or environmental cause.
+
+<Info>
+  Comparison is most meaningful when assets share the same manufacturer, model, and operating profile. Comparing a 15 kW pump to a 90 kW pump in the same area will produce misleading results.
+</Info>
+
+## Root Cause Analysis
+
+Root Cause Analysis (RCA) helps you move beyond treating symptoms and identify the underlying reason an asset degraded. Use RCA when an asset reaches **Alert** or **Critical** status, or after a confirmed failure event.
+
+**When to run an RCA:**
+- An asset repeatedly returns to Alert status after maintenance
+- A failure causes unexpected downtime
+- You want to build a prevention strategy before a fault progresses
+
+**How to start an RCA in TRACTIAN:**
+
+1. Open the affected asset and navigate to the **Health** tab.
+2. Click **Start RCA** on the active AI insight or health event.
+3. Document the observed symptoms — what the sensors detected, when the change began, what operating conditions were present.
+4. Work through the possible causes list. TRACTIAN pre-populates common causes based on the detected fault type and asset category.
+5. Confirm the root cause once identified and record the corrective action taken.
+6. Link the RCA to a work order and, if applicable, to a failure event in the [Failure Library](/assets/failure-library).
+
+<Tip>
+  Completing RCAs consistently — even for minor alerts — builds a failure history that TRACTIAN's AI uses to improve future detection accuracy on your specific equipment.
+</Tip>

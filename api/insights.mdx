@@ -1,0 +1,320 @@
+---
+title: "Insights API: Retrieve AI Fault Diagnoses for Assets"
+sidebarTitle: "Insights"
+description: "REST API for reading TRACTIAN AI-generated machine health insights, fault diagnoses, and spectral analysis sections for your assets."
+---
+
+The Insights API surfaces TRACTIAN's AI-generated fault diagnoses so you can pull them into your own maintenance workflows, CMMS, or executive dashboards. Each insight represents a detected failure mode — backed by vibration spectral analysis, temperature trends, or other sensor signals — with a plain-language diagnosis and a set of recommended actions. You can confirm or dismiss insights programmatically to keep your operational status synchronized across systems.
+
+## Authentication
+
+All requests require an `Authorization` header with your API key and an `x-company-id` header.
+
+```bash
+Authorization: Bearer {api_key}
+x-company-id: {companyId}
+```
+
+---
+
+## List insights
+
+`GET /v1/insights`
+
+Returns a paginated list of insights for your company. Use filters to focus on open critical findings or to query a date range for reporting.
+
+<CodeGroup>
+```bash cURL
+curl -G https://api.tractian.com/v1/insights \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d assetId=motor-001 \
+  -d criticality=high \
+  -d status=open \
+  -d page=1 \
+  -d limit=25
+```
+</CodeGroup>
+
+### Query parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number for paginated results.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="25">
+  Number of insights per page. Maximum is 100.
+</ParamField>
+
+<ParamField query="assetId" type="string">
+  Filter insights for a specific asset.
+</ParamField>
+
+<ParamField query="criticality" type="string">
+  Filter by criticality level: `low`, `medium`, `high`, or `critical`.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by lifecycle status: `open`, `confirmed`, or `dismissed`.
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  ISO 8601 start date for the `createdAt` range filter (e.g., `2025-01-01T00:00:00Z`).
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  ISO 8601 end date for the `createdAt` range filter.
+</ParamField>
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "insight-abc123",
+      "assetId": "motor-001",
+      "assetName": "Pump Motor #3",
+      "failureMode": "bearing_wear",
+      "criticality": "high",
+      "status": "open",
+      "diagnosis": "Outer race bearing wear detected on Drive End bearing. BPFO frequency at 142Hz with 3 visible harmonics.",
+      "createdAt": "2025-01-15T10:30:00Z",
+      "confirmedAt": null,
+      "dismissedAt": null
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 25,
+    "total": 8,
+    "totalPages": 1
+  }
+}
+```
+
+<ResponseField name="data" type="array">
+  Array of insight objects.
+
+  <Expandable title="Insight object fields">
+    <ResponseField name="id" type="string">
+      Unique identifier for the insight.
+    </ResponseField>
+    <ResponseField name="assetId" type="string">
+      ID of the asset this insight belongs to.
+    </ResponseField>
+    <ResponseField name="assetName" type="string">
+      Display name of the asset at the time the insight was created.
+    </ResponseField>
+    <ResponseField name="failureMode" type="string">
+      Machine-readable failure mode label (e.g., `bearing_wear`, `misalignment`, `imbalance`, `looseness`).
+    </ResponseField>
+    <ResponseField name="criticality" type="string">
+      AI-assessed criticality: `low`, `medium`, `high`, or `critical`.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Current lifecycle status: `open`, `confirmed`, or `dismissed`.
+    </ResponseField>
+    <ResponseField name="diagnosis" type="string">
+      Plain-language description of the detected fault and its spectral evidence.
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of when the insight was generated.
+    </ResponseField>
+    <ResponseField name="confirmedAt" type="string">
+      ISO 8601 timestamp of confirmation. Null if not yet confirmed.
+    </ResponseField>
+    <ResponseField name="dismissedAt" type="string">
+      ISO 8601 timestamp of dismissal. Null if not dismissed.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Get an insight
+
+`GET /v1/insights/:insightId`
+
+Returns a single insight with full detail, including recommended actions and a flag indicating whether spectral analysis sections are available.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/insights/insight-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="insightId" type="string" required>
+  The unique ID of the insight.
+</ParamField>
+
+### Response
+
+```json
+{
+  "id": "insight-abc123",
+  "assetId": "motor-001",
+  "assetName": "Pump Motor #3",
+  "failureMode": "bearing_wear",
+  "criticality": "high",
+  "status": "open",
+  "diagnosis": "Outer race bearing wear detected on Drive End bearing. BPFO frequency at 142Hz with 3 visible harmonics.",
+  "recommendedActions": [
+    "Inspect bearing for visible wear",
+    "Check lubrication",
+    "Schedule bearing replacement within 2 weeks"
+  ],
+  "spectralAnalysisAvailable": true,
+  "createdAt": "2025-01-15T10:30:00Z",
+  "confirmedAt": null,
+  "dismissedAt": null
+}
+```
+
+<ResponseField name="recommendedActions" type="array">
+  Ordered list of plain-language actions recommended by the TRACTIAN AI engine.
+</ResponseField>
+
+<ResponseField name="spectralAnalysisAvailable" type="boolean">
+  Indicates whether spectral analysis section data is available via the `/section` endpoint.
+</ResponseField>
+
+---
+
+## Get an insight section
+
+`GET /v1/insights/:insightId/section/:sectionType`
+
+Returns structured UI component data for a specific analytical section of the insight. Use this to embed TRACTIAN's spectral analysis views inside your own custom dashboards.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/insights/insight-abc123/section/fault_frequency_trend \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="insightId" type="string" required>
+  The unique ID of the insight.
+</ParamField>
+
+<ParamField path="sectionType" type="string" required>
+  The section to retrieve. One of:
+  - `fault_frequency_trend` — time-series chart of the fault frequency amplitude over time.
+  - `amplitude_comparison` — comparison of current amplitude versus baseline.
+</ParamField>
+
+### Response
+
+```json
+{
+  "infos": [
+    {
+      "component": "LineChart",
+      "props": {
+        "title": "BPFO Frequency Trend",
+        "xAxis": "timestamp",
+        "yAxis": "amplitude_g",
+        "data": [
+          { "timestamp": "2025-01-01T00:00:00Z", "amplitude_g": 0.82 },
+          { "timestamp": "2025-01-08T00:00:00Z", "amplitude_g": 1.14 },
+          { "timestamp": "2025-01-15T00:00:00Z", "amplitude_g": 1.67 }
+        ]
+      }
+    }
+  ]
+}
+```
+
+<ResponseField name="infos" type="array">
+  Array of UI component descriptors. Each item contains a `component` type and a `props` object with the data needed to render the component in your custom dashboard.
+</ResponseField>
+
+---
+
+## Confirm an insight
+
+`POST /v1/insights/:insightId/confirm`
+
+Marks an insight as confirmed — indicating that a human technician or engineer has validated the AI diagnosis. Confirmed insights can be used to trigger downstream workflows such as work order creation.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/insights/insight-abc123/confirm \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "confirmedByUserId": "user-123",
+    "notes": "Bearing wear confirmed by physical inspection on 2025-01-16."
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="insightId" type="string" required>
+  The unique ID of the insight to confirm.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="confirmedByUserId" type="string" required>
+  The user ID of the person confirming the insight.
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Optional free-text notes from the confirming user, such as physical inspection findings.
+</ParamField>
+
+### Response
+
+Returns the updated insight object with `status: "confirmed"` and a populated `confirmedAt` timestamp.
+
+---
+
+## Dismiss an insight
+
+`POST /v1/insights/:insightId/dismiss`
+
+Marks an insight as dismissed, indicating the detected fault is a false positive or is otherwise not actionable. Dismissed insights remain in the system for audit and model-improvement purposes.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/insights/insight-abc123/dismiss \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "dismissedByUserId": "user-123",
+    "reason": "false_positive"
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="insightId" type="string" required>
+  The unique ID of the insight to dismiss.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="dismissedByUserId" type="string" required>
+  The user ID of the person dismissing the insight.
+</ParamField>
+
+<ParamField body="reason" type="string" required>
+  Reason for dismissal. Accepted values: `false_positive`, `already_addressed`, `not_applicable`, `other`.
+</ParamField>
+
+### Response
+
+Returns the updated insight object with `status: "dismissed"` and a populated `dismissedAt` timestamp.

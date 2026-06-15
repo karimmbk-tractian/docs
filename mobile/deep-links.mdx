@@ -1,0 +1,80 @@
+---
+title: "Deep Links and QR Code Scanning for Asset Navigation"
+sidebarTitle: "Deep Links"
+description: Use TRACTIAN deep links and QR code stickers to jump directly to any asset, work order, or inspection in the mobile app with a single scan.
+---
+
+Deep links let you open any asset, work order, or inspection in the TRACTIAN mobile app instantly — no searching, no scrolling through the asset tree. The most powerful use of this feature is printing QR code stickers and attaching them directly to your machines. A technician arriving at a pump or motor can scan the code on the nameplate and land on that asset's profile, open work orders, and fault history in under a second.
+
+## Deep link format
+
+Every piece of content in TRACTIAN has a unique deep link built from a simple URL scheme:
+
+```
+tractian://{module}/{id}
+```
+
+Replace `{module}` with the section of the app you want to open, and `{id}` with the unique identifier of the specific record. Here are the supported modules and example links:
+
+| Destination | Deep link format | Example |
+|---|---|---|
+| Asset | `tractian://assets/{assetId}` | `tractian://assets/abc123` |
+| Work Order | `tractian://work-orders/{workOrderId}` | `tractian://work-orders/wo-456` |
+| Insight | `tractian://insights/{insightId}` | `tractian://insights/insight-789` |
+| Inspection | `tractian://inspections/{inspectionId}` | `tractian://inspections/insp-321` |
+
+Tapping or scanning a deep link opens the TRACTIAN app directly to the specified screen. If the app is not installed, the device will prompt the user to download it first.
+
+## QR code labels
+
+Placing a QR code label on a machine turns any smartphone into an instant maintenance lookup tool. Here's how to generate and deploy QR codes for your assets:
+
+<Steps>
+  <Step title="Open the asset in the TRACTIAN web app">
+    Log in at [app.tractian.com](https://app.tractian.com) and navigate to the asset you want to label. Click on the asset name to open its detail page.
+  </Step>
+  <Step title="Generate the QR code">
+    Click the **Share** button in the top-right corner of the asset page, then select **Generate QR Code**. TRACTIAN creates a QR code that encodes the asset's deep link.
+  </Step>
+  <Step title="Print the QR code label">
+    Download the QR code image and print it on a durable label. For industrial environments, use a weatherproof or laminated label material rated for your facility's conditions.
+  </Step>
+  <Step title="Attach the label to the machine">
+    Stick the label in a clearly visible location on the machine — near the nameplate or on the access panel is a common choice. Make sure it's positioned where a technician can scan it without difficulty.
+  </Step>
+  <Step title="Scan with the TRACTIAN app">
+    Technicians open the TRACTIAN app and tap the **QR scan** icon (available on the Dashboard and Assets tabs), then point the camera at the label. The app navigates directly to that asset's screen.
+  </Step>
+</Steps>
+
+<Tip>
+  Putting QR code labels on equipment tags is one of the fastest ways to cut time-to-wrench for your team. Instead of hunting through an asset tree or describing a machine to someone at a desk, a technician scans the sticker and is looking at the open work orders, recent fault history, and maintenance schedule in seconds — reducing time to start a work order from minutes to seconds.
+</Tip>
+
+## Deep links in push notifications
+
+When TRACTIAN sends you a push notification — for a new work order assignment, a critical fault alert, or a scheduled inspection reminder — the notification includes a deep link to the relevant record. Tap the notification and the app opens directly to that work order, fault insight, or inspection. You never have to manually search for the item the notification is referencing.
+
+<Info>
+  Deep links in notifications work whether the app is running in the background or fully closed. If you're not logged in, the app will ask you to sign in first and then navigate to the linked content.
+</Info>
+
+## Sharing links with your team
+
+You can copy the deep link for any asset, work order, or inspection and share it with a colleague through any messaging app, email, or team communication tool.
+
+<Steps>
+  <Step title="Copy the deep link">
+    In the TRACTIAN mobile app, open the record you want to share — an asset, work order, insight, or inspection. Tap the **Share** icon and select **Copy Link**. The deep link is now on your clipboard.
+  </Step>
+  <Step title="Paste and send">
+    Paste the link into a message, email, or work chat and send it to your colleague.
+  </Step>
+  <Step title="Recipient taps the link">
+    When your colleague taps the link on their device, the TRACTIAN app opens directly to that record. They must have the TRACTIAN app installed and be logged into an active account to access the content.
+  </Step>
+</Steps>
+
+<Note>
+  Deep links do not bypass access controls. If the recipient's account doesn't have permission to view the linked asset or work order, they'll see a permission error when the link opens.
+</Note>

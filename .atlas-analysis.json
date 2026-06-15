@@ -1,0 +1,133 @@
+{
+  "projectType": "saas",
+  "projectName": "TRACTIAN",
+  "projectDescription": "TRACTIAN is an AI-powered industrial IoT platform that helps manufacturers prevent equipment failures, manage maintenance workflows, and boost plant uptime through real-time condition monitoring, CMMS, OEE tracking, and predictive analytics.",
+  "theme": "luma",
+  "primaryColor": "#FF6B00",
+  "lightColor": "#FF8C33",
+  "darkColor": "#CC5500",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "platform-overview"
+            ]
+          },
+          {
+            "group": "Condition Monitoring",
+            "pages": [
+              "monitoring/sensors-setup",
+              "monitoring/insights-and-diagnosis",
+              "monitoring/vibration-analysis",
+              "monitoring/alerts-and-notifications"
+            ]
+          },
+          {
+            "group": "Asset Management",
+            "pages": [
+              "assets/asset-tree",
+              "assets/asset-health",
+              "assets/inspections",
+              "assets/failure-library"
+            ]
+          },
+          {
+            "group": "CMMS",
+            "pages": [
+              "cmms/work-orders",
+              "cmms/maintenance-plans",
+              "cmms/lubrication-routes"
+            ]
+          },
+          {
+            "group": "Dashboards & Reports",
+            "pages": [
+              "dashboards/executive-mode",
+              "dashboards/oee-tracking",
+              "dashboards/engagement-analytics",
+              "dashboards/custom-reports"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/webhooks",
+              "integrations/erp-cmms"
+            ]
+          },
+          {
+            "group": "Mobile App",
+            "pages": [
+              "mobile/overview",
+              "mobile/offline-mode",
+              "mobile/deep-links"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/introduction",
+              "api/authentication",
+              "api/errors"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/assets",
+              "api/insights",
+              "api/work-orders",
+              "api/notifications",
+              "api/dashboards"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Real-time vibration, temperature, and RPM condition monitoring via IoT sensors",
+    "AI-powered fault detection covering 35+ failure modes (bearing wear, misalignment, cavitation, etc.)",
+    "CMMS with work orders, maintenance plans, and lubrication routes",
+    "Executive Mode dashboards with hierarchical multi-company views",
+    "OEE (Overall Equipment Effectiveness) tracking and production analytics",
+    "Offline-capable mobile app with auto-sync conflict resolution",
+    "Multi-channel notifications (push, email, SMS, WhatsApp, voice) via Hermes",
+    "Asset Performance Management (APM) with FMEA and RCA tools",
+    "Spectral analysis workspace with cursor, harmonics, and sideband tools",
+    "Third-party ERP/CMMS integrations via integration gateway"
+  ],
+  "publicApiSurface": [
+    "GET /v1/insights/:insightId — retrieve insight details and diagnosis",
+    "GET /v1/insights/:insightId/section/:sectionType — load a specific insight section (fault_frequency_trend, amplitude_comparison)",
+    "GET /v1/engagement/overview — KPI summary for user engagement",
+    "GET /v1/engagement/access-trend — daily activity time series",
+    "GET /v1/engagement/leaderboard — top users ranked by activity",
+    "GET /v1/engagement/by-user-table — paginated per-user engagement data",
+    "POST /v1/engagement/query — freeform engagement analytics query",
+    "POST /v1/dashboards/tree — load executive dashboard tree",
+    "POST /v1/dashboards/collections — create dashboard collection",
+    "POST /v1/dashboards — add dashboard node (display, map, or card)",
+    "PUT /v1/dashboards/:nodeId — update dashboard node",
+    "DELETE /v1/dashboards/:nodeId — delete dashboard node",
+    "POST /v1/dashboards/:nodeId/move — move node in tree",
+    "GET /v1/dashboards/favorites — list user favorites",
+    "PUT /subscribers/:subscriberId/topics/:topic/subscribe — subscribe to notification topic",
+    "PUT /subscribers/:subscriberId/topics/:topic/unsubscribe — unsubscribe from topic",
+    "GET /subscriptions/:topic — retrieve subscription details",
+    "POST /notifications — send notification (generic or template-based)",
+    "POST /messages — send ad-hoc message without platform notification model"
+  ]
+}

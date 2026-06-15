@@ -1,0 +1,75 @@
+---
+title: "Integrate TRACTIAN with SAP, Maximo, and CMMS Platforms"
+sidebarTitle: "ERP & CMMS"
+description: Sync TRACTIAN work orders, assets, and maintenance records with SAP PM, IBM Maximo, and other CMMS platforms using the integration gateway.
+---
+
+Maintenance decisions live in TRACTIAN, but your organization's official records — asset registers, work orders, spare parts inventory — often live in an ERP or CMMS. Without an integration, your team ends up doing double entry: logging a fault in TRACTIAN, then creating the same work order again in SAP or Maximo. TRACTIAN's ERP and CMMS integration gateway eliminates that duplication by keeping both systems synchronized automatically. A work order created in TRACTIAN flows into your CMMS within minutes; an asset added in your ERP appears in TRACTIAN on the next sync cycle.
+
+## Supported systems
+
+<CardGroup cols={2}>
+  <Card title="SAP PM" icon="building-2">
+    Bi-directional sync for functional locations, equipment master records, notifications, and maintenance orders via SAP's RFC/BAPI interface or REST API (SAP S/4HANA).
+  </Card>
+  <Card title="IBM Maximo" icon="server">
+    Bi-directional sync for assets, work orders, and job plans. Supports Maximo Application Suite (MAS) and Maximo 7.6.x via REST APIs and integration framework adapters.
+  </Card>
+  <Card title="Oracle EAM" icon="database">
+    Work order and asset synchronization for Oracle E-Business Suite EAM and Oracle Fusion Cloud Maintenance via Oracle Integration Cloud or direct REST API.
+  </Card>
+  <Card title="Custom CMMS" icon="plug">
+    For CMMS platforms not listed above, use the TRACTIAN REST API directly to build a custom bi-directional integration tailored to your system's data model and endpoints.
+  </Card>
+</CardGroup>
+
+## What syncs
+
+The integration gateway handles four data domains across TRACTIAN and your ERP or CMMS:
+
+| Data domain | Sync direction | Details |
+|---|---|---|
+| **Assets** | TRACTIAN ↔ ERP (bi-directional) | Asset name, tag, location, equipment type, and status. TRACTIAN treats the ERP as the master record — assets created in the ERP automatically appear in TRACTIAN. |
+| **Work Orders** | TRACTIAN → ERP | New work orders generated from AI insights or manual creation in TRACTIAN are pushed to the CMMS. Status updates (In Progress, Completed) sync back to TRACTIAN. |
+| **Spare Parts** | ERP → TRACTIAN | Parts inventory data flows from the ERP into TRACTIAN, so technicians can check part availability before starting a repair without switching systems. |
+| **Maintenance History** | TRACTIAN → ERP | Completed work orders, labor records, and failure event logs are written back to the ERP to maintain a complete maintenance history in your authoritative system. |
+
+## Integration setup
+
+ERP and CMMS integrations are configured through the TRACTIAN implementation team. The process follows these steps:
+
+<Steps>
+  <Step title="Contact the TRACTIAN Implementation Team">
+    Reach out to your TRACTIAN account manager or email **integrations@tractian.com** to initiate the integration. Describe which system you are connecting (SAP PM, Maximo, etc.) and your target go-live date.
+  </Step>
+  <Step title="Provide connection details and field mapping requirements">
+    Your implementation team will send you a technical intake form. You will need to supply ERP connection credentials (hostname, user, authentication method), the relevant modules or plant codes in scope, and a field mapping document that specifies how your ERP fields correspond to TRACTIAN's data model (for example, which SAP functional location structure maps to a TRACTIAN area).
+  </Step>
+  <Step title="TRACTIAN configures the integration gateway">
+    The TRACTIAN team provisions the integration gateway in your environment, applies your field mappings, and sets up the sync schedule (near-real-time for work orders, hourly or daily for asset and parts data depending on your ERP's capabilities).
+  </Step>
+  <Step title="Test sync with a small asset set">
+    Before going live on your full asset register, the team runs a controlled sync using a small subset of assets — typically one production area. Verify that assets appear correctly in TRACTIAN, that test work orders flow to your CMMS, and that field values are mapped as expected.
+  </Step>
+  <Step title="Validate data and go live">
+    Once the test sync passes your validation criteria, the implementation team enables the full sync scope. Your operations and maintenance teams can then work in either system with confidence that the data stays consistent.
+  </Step>
+</Steps>
+
+## Custom CMMS via REST API
+
+If your CMMS is not one of the pre-built connectors listed above, you can build a custom integration directly against the TRACTIAN REST API. The API exposes full read and write access to assets, work orders, insights, and maintenance records.
+
+Key endpoints for a custom CMMS integration:
+
+- `GET /v1/assets` — list all assets with filtering by area, status, or tag
+- `POST /v1/work-orders` — create a work order in TRACTIAN from an external system
+- `PUT /v1/work-orders/:id` — update work order status or add completion notes
+- `GET /v1/insights` — retrieve open and historical AI insights
+- `GET /v1/maintenance-history` — pull completed maintenance records for export
+
+See the [API Introduction](/api/introduction) page for authentication setup and the full endpoint reference.
+
+<Note>
+  ERP and CMMS integrations are enterprise-tier features that require a professional services engagement. Implementation scope, timeline, and cost depend on the target system, data volume, and field mapping complexity. Contact your **TRACTIAN account manager** to discuss requirements and get a statement of work before beginning any integration project.
+</Note>

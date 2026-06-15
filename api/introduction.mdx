@@ -1,0 +1,90 @@
+---
+title: "TRACTIAN REST API: Introduction and Quick Reference"
+sidebarTitle: "Introduction"
+description: "Overview of the TRACTIAN REST API — base URL, request format, pagination, and endpoints for assets, insights, work orders, notifications, and dashboards."
+---
+
+The TRACTIAN REST API gives you programmatic access to the full power of the TRACTIAN platform. Use it to automate maintenance workflows, sync asset and sensor data with external systems like EAPs and CMMs, and build custom integrations tailored to your operations — all over standard HTTPS with JSON payloads.
+
+## Base URL
+
+All API requests are made to the following base URL:
+
+```
+https://api.tractian.com
+```
+
+Every endpoint path is versioned and appended to this base. For example, to list assets you call `https://api.tractian.com/v1/assets`.
+
+## Request format
+
+All requests and responses use JSON. Include the following headers on every request — `Content-Type` is required for requests that send a body (POST, PUT, PATCH):
+
+```http
+POST /v1/insights/abc123 HTTP/1.1
+Host: api.tractian.com
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+x-company-id: YOUR_COMPANY_ID
+```
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Always | Bearer token authenticating your API key |
+| `Content-Type` | POST / PUT / PATCH | Must be `application/json` |
+| `x-company-id` | Company-scoped routes | The unique identifier of your TRACTIAN company |
+
+<Note>
+  Most endpoints are scoped to a specific company. Always include the `x-company-id` header with your company's identifier, or requests to those routes will return a `400 Bad Request` error.
+</Note>
+
+## Available endpoints
+
+<CardGroup cols={2}>
+  <Card title="Assets" icon="microchip" href="/api/assets">
+    Query, create, and update the machines and equipment registered in your TRACTIAN account.
+  </Card>
+  <Card title="Insights" icon="lightbulb" href="/api/insights">
+    Access AI-generated fault detections, anomaly alerts, and predictive maintenance recommendations.
+  </Card>
+  <Card title="Work Orders" icon="clipboard-list" href="/api/work-orders">
+    Create, assign, and track corrective and preventive maintenance work orders.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/api/notifications">
+    Send and manage alerts triggered by asset health events or custom conditions.
+  </Card>
+  <Card title="Dashboards" icon="chart-line" href="/api/dashboards">
+    Retrieve aggregated KPIs and time-series data to power external dashboards and reports.
+  </Card>
+</CardGroup>
+
+## Pagination
+
+Endpoints that return lists of resources use **page-based pagination**. Pass `page` and `limit` as query parameters to control which slice of results you receive:
+
+```bash
+GET /v1/assets?page=1&limit=50
+```
+
+Every paginated response wraps the resource array in a `data` field alongside a `pagination` object:
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "count": 150,
+    "page": 1,
+    "limit": 50
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `count` | integer | Total number of records matching your query |
+| `page` | integer | The current page number (1-indexed) |
+| `limit` | integer | Maximum number of records returned per page |
+
+To retrieve all records, iterate pages until `page * limit >= count`. The maximum allowed `limit` per request is `100`.
+
+All datetime fields across all responses use **ISO 8601 format** — for example, `2025-01-15T10:30:00Z`.

@@ -1,0 +1,122 @@
+---
+title: "Configure TRACTIAN Webhooks for Event-Driven Alerts"
+sidebarTitle: "Webhooks"
+description: Set up TRACTIAN webhooks to receive real-time HTTP notifications when machine health changes, insights are created, or work order statuses update.
+---
+
+Webhooks let TRACTIAN push event data to your systems the moment something important happens — no polling required. When a new AI fault insight is generated, a work order changes status, or an asset's health level transitions, TRACTIAN sends an HTTP POST request to an endpoint you control. From there, you can route the data anywhere: post a message to Slack, open a ticket in ServiceNow, trigger a work order in your CMMS, or feed data into a custom dashboard. If you can receive an HTTP request, you can integrate with TRACTIAN.
+
+## Supported events
+
+| Event name | When it fires |
+|---|---|
+| `insight.created` | TRACTIAN's AI generates a new fault insight for an asset |
+| `insight.confirmed` | A technician reviews and confirms an insight as a real fault |
+| `work_order.created` | A new work order is created (manually or from an insight) |
+| `work_order.status_changed` | A work order moves to a new status (e.g., Open → In Progress → Completed) |
+| `asset.health_changed` | An asset's health level changes (e.g., Healthy → Attention Required → Critical) |
+
+You can subscribe to individual events or to all events on a single endpoint. If you want different events routed to different systems, register multiple endpoints with separate event subscriptions.
+
+## Registering a webhook
+
+<Steps>
+  <Step title="Navigate to Webhook Settings">
+    Go to **Settings → Integrations → Webhooks**. This page lists all your registered endpoints and their subscription status.
+  </Step>
+  <Step title="Add a new endpoint">
+    Click **Add Endpoint**. A configuration panel slides open on the right.
+  </Step>
+  <Step title="Enter your endpoint URL">
+    Type or paste the full URL of the server that will receive webhook events. The URL must use **HTTPS** — HTTP endpoints are not accepted. Make sure the endpoint is publicly reachable and not behind a firewall that blocks external traffic.
+  </Step>
+  <Step title="Select events to subscribe to">
+    Check the boxes next to the events you want this endpoint to receive. You can select any combination of the supported events listed above. Start with just the events you need — you can always add more later.
+  </Step>
+  <Step title="Save and verify">
+    Click **Save**. TRACTIAN immediately sends a **test ping** — a POST request with a `ping` event type — to your endpoint. If your server responds with HTTP 200, the endpoint is confirmed as active and the status indicator turns green. If the ping fails, check your server logs and firewall rules before trying again.
+  </Step>
+</Steps>
+
+## Webhook payload
+
+Every webhook request is a JSON POST with a consistent envelope structure. Here is an example payload for an `insight.created` event:
+
+```json
+{
+  "event": "insight.created",
+  "timestamp": "2025-01-15T10:30:00Z",
+  "data": {
+    "insightId": "abc123",
+    "assetId": "machine-001",
+    "assetName": "Motor #3",
+    "failureMode": "bearing_wear",
+    "criticality": "high",
+    "diagnosis": "Outer race bearing wear detected on Drive End bearing"
+  }
+}
+```
+
+The `event` field identifies which event fired. The `timestamp` is in ISO 8601 UTC. The `data` object contains event-specific fields — for `work_order.status_changed`, for example, `data` includes `workOrderId`, `previousStatus`, and `newStatus` instead of insight fields.
+
+## Verifying webhook signatures
+
+TRACTIAN signs every webhook request with an HMAC-SHA256 signature so you can verify that the payload genuinely came from TRACTIAN and was not tampered with in transit. The signature is included in the `X-TRACTIAN-Signature` request header.
+
+The signature is computed as:
+
+```
+HMAC-SHA256(secret_key, request_body_as_raw_bytes)
+```
+
+Your signing secret is shown once when you create the endpoint. Copy it and store it securely — TRACTIAN does not display it again.
+
+**Verification example in Python:**
+
+```python
+import hmac
+import hashlib
+
+def verify_signature(payload_bytes: bytes, header_signature: str, secret: str) -> bool:
+    expected = hmac.new(
+        secret.encode("utf-8"),
+        payload_bytes,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, header_signature)
+```
+
+**Verification example in Node.js:**
+
+```javascript
+const crypto = require("crypto");
+
+function verifySignature(payloadBuffer, headerSignature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payloadBuffer)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(headerSignature)
+  );
+}
+```
+
+Always use a **timing-safe comparison** (like `hmac.compare_digest` in Python or `crypto.timingSafeEqual` in Node.js) to prevent timing attacks. Reject any request where the signature does not match — do not process its payload.
+
+## Retry policy
+
+If your endpoint returns a non-2xx HTTP status code, or if the connection times out, TRACTIAN automatically retries the delivery up to **3 times** using exponential backoff:
+
+| Attempt | Delay after previous failure |
+|---|---|
+| 1st retry | 10 seconds |
+| 2nd retry | 30 seconds |
+| 3rd retry | 90 seconds |
+
+After three failed attempts, TRACTIAN marks the delivery as failed and logs it in the **Settings → Integrations → Webhooks → Delivery Log**. You can inspect failed deliveries there and manually trigger a re-send if needed.
+
+<Warning>
+  Your endpoint must respond with an HTTP **200** status code within **5 seconds** of receiving the request. If your server takes longer than 5 seconds to respond, TRACTIAN treats the delivery as failed and starts the retry sequence — even if your server eventually processes the event successfully. To avoid duplicate processing, acknowledge the request immediately with a 200 response and handle the payload asynchronously in a background job or queue.
+</Warning>

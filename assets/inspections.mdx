@@ -1,0 +1,100 @@
+---
+title: "Schedule and Perform Machine Inspections in TRACTIAN"
+sidebarTitle: "Inspections"
+description: "Create inspection routes, assign tasks to technicians, and capture inspection results from the field using the TRACTIAN mobile app."
+---
+
+Inspections in TRACTIAN are structured walkthroughs of your equipment — a defined set of checks a technician performs on specific machines, recorded digitally in the field. Unlike ad-hoc observations, TRACTIAN inspections are repeatable, traceable, and directly connected to your asset health data and work order system. When a technician finds a defect during an inspection, the platform can automatically generate a work order so nothing falls through the cracks.
+
+## Inspection types
+
+TRACTIAN supports two distinct inspection models. Choosing the right type for each route reduces unnecessary labor and focuses your team's attention where it matters most.
+
+<CardGroup cols={2}>
+  <Card title="Scheduled Inspections" icon="calendar" href="/assets/inspections">
+    **Time-based** — These routes run on a fixed cadence: daily, weekly, monthly, or custom intervals. Use scheduled inspections for critical assets that require regular human observation regardless of sensor data, or for checks that sensors can't perform (oil color, unusual smells, visual leaks).
+  </Card>
+  <Card title="Predictive Inspections" icon="wand-magic-sparkles" href="/monitoring/insights-and-diagnosis">
+    **AI-triggered** — These routes are only activated when TRACTIAN's AI detects an anomaly on a monitored asset. Instead of walking the same route every week, your technicians only go when there's a reason to. This type is also called a *sensory inspection*.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Replace as many time-based routes as possible with predictive inspections for assets covered by TRACTIAN sensors. Your team will spend less time on routine walks and more time resolving real faults. Reserve scheduled inspections for assets without sensor coverage or for regulatory compliance requirements.
+</Tip>
+
+## Creating an inspection route
+
+<Steps>
+  <Step title="Open the Inspections module">
+    In the left sidebar, navigate to **Assets** > **Inspections**, then click **+ New Route**.
+  </Step>
+  <Step title="Name and configure the route">
+    Give the route a descriptive name (e.g., "Compressor Room — Weekly Sensory Check"). Select the inspection type: **Scheduled** or **Predictive**. If you select Scheduled, set the recurrence — daily, weekly, or monthly — and the start date.
+  </Step>
+  <Step title="Select assets to include">
+    Search and add the machines and components this route should cover. You can add assets from multiple areas in the same plant, but keep routes logically grouped so the walk is efficient for the technician.
+  </Step>
+  <Step title="Add checklist items per asset">
+    For each asset on the route, click **+ Add Step** to define what the technician should check. Examples:
+
+    - Check oil level — mark OK / Low / Empty
+    - Check for abnormal vibration — Yes / No with notes field
+    - Measure surface temperature with IR thermometer — numeric input with acceptable range
+    - Check for leaks or corrosion — Yes / No with photo option
+
+    You can add instructions, reference images, and acceptable value ranges to each step. The more detail you add here, the more consistent results you'll get from different technicians.
+  </Step>
+  <Step title="Assign to a technician or team">
+    Select the **Assignee** — a specific technician or a team. For predictive inspections, you can set a response SLA so the inspection is completed within a defined window after the AI triggers it.
+  </Step>
+  <Step title="Publish the route">
+    Review the full route summary and click **Publish**. For scheduled routes, the first inspection task is queued immediately. For predictive routes, the route is armed and will activate the next time the AI detects a qualifying anomaly on any asset in the route.
+  </Step>
+</Steps>
+
+## Performing inspections in the field
+
+Technicians complete inspections using the TRACTIAN mobile app. The app guides them through each checklist step and captures their responses, notes, and photos without any paperwork.
+
+**The mobile inspection flow:**
+
+<Steps>
+  <Step title="Receive the inspection task">
+    The technician gets a push notification when an inspection is assigned or triggered. They open the TRACTIAN app and tap the task from their **My Tasks** queue.
+  </Step>
+  <Step title="Navigate to the first asset">
+    The app displays the asset list for the route in recommended walk order. The technician can tap an asset name to view its location on the plant map, or — if QR codes are installed — they can scan the code on the physical machine to confirm they're at the correct asset.
+  </Step>
+  <Step title="Complete the checklist">
+    For each step, the technician selects the result (OK / Not OK, Yes / No, or enters a measured value), adds notes if needed, and attaches photos for any anomalies found. Required steps must be completed before the route can be submitted.
+  </Step>
+  <Step title="Flag defects">
+    If a step result falls outside the acceptable range or is marked as a defect, the app prompts the technician to add a description and at least one photo. This information feeds directly into an auto-generated work order.
+  </Step>
+  <Step title="Submit the inspection">
+    After completing all steps, the technician taps **Submit Inspection**. The results sync to the TRACTIAN platform in real time, even if connectivity is intermittent (the app stores data locally and uploads when signal is restored).
+  </Step>
+</Steps>
+
+<Note>
+  The TRACTIAN mobile app works offline. If a technician enters an area with poor connectivity, all checklist inputs are saved locally and synchronized automatically once the device reconnects to the network.
+</Note>
+
+## Inspection results
+
+Once an inspection is submitted, the results are available immediately in the **Inspections** module under **Completed Routes**.
+
+**What happens to the data:**
+
+- All responses, notes, and photos are stored against the specific asset and inspection date, building a searchable audit trail.
+- Steps marked as defects automatically trigger a **draft work order** pre-populated with the asset, defect description, and any attached photos. A maintenance planner reviews and approves the work order before it enters the active queue.
+- Inspection results appear on the asset's detail page alongside sensor data and health score history, giving you a complete picture of observed and measured condition.
+
+**Reviewing results as a supervisor:**
+
+Go to **Assets** > **Inspections** > **Completed Routes** to see all finished inspections. Filter by date range, technician, or asset to find specific records. Open any inspection to view a step-by-step breakdown of what was found and whether work orders were generated.
+
+<Info>
+  Inspection completion rates and average time-to-complete are tracked per technician and per route. Use these metrics in **Reports** > **Inspections** to identify routes that are frequently skipped, taking longer than expected, or generating a high rate of defects.
+</Info>

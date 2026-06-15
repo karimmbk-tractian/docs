@@ -1,0 +1,51 @@
+---
+title: "TRACTIAN Integrations: Connect Your Plant Systems"
+sidebarTitle: "Overview"
+description: Connect TRACTIAN to your existing ERP, CMMS, and data systems using the REST API, webhooks, and pre-built integration connectors.
+---
+
+Your plant doesn't run on a single platform — work orders live in your CMMS, assets are registered in your ERP, and alerts need to reach your team through existing communication channels. TRACTIAN's integration layer is designed to fit into this reality. Instead of forcing you to change how your operation works, TRACTIAN connects to the systems you already rely on, passing data in both directions so every platform stays in sync automatically.
+
+## Integration options
+
+<CardGroup cols={2}>
+  <Card title="REST API" icon="code" href="/api/introduction">
+    Build custom integrations using TRACTIAN's full REST API. Query assets, insights, work orders, and sensor data programmatically. Suitable for custom applications, internal dashboards, and bespoke automation workflows.
+  </Card>
+  <Card title="Webhooks" icon="bolt" href="/integrations/webhooks">
+    Receive real-time HTTP POST notifications when key events occur — a new fault insight, a work order status change, or an asset health transition. Push those events to Slack, Teams, your ticketing system, or any custom endpoint.
+  </Card>
+  <Card title="ERP & CMMS Connectors" icon="building" href="/integrations/erp-cmms">
+    Pre-built bi-directional connectors for SAP PM, IBM Maximo, and Oracle EAM. Sync assets, work orders, and spare parts inventory without writing custom code. Requires implementation team engagement.
+  </Card>
+  <Card title="Data Export" icon="download" href="/dashboards/custom-reports">
+    Export reports, engagement data, and asset histories to CSV or PDF on demand or on a schedule. The simplest integration path — no API credentials required.
+  </Card>
+</CardGroup>
+
+## Authentication
+
+All REST API and webhook integrations authenticate using **Bearer token** authentication. Include your API token in the `Authorization` header of every request:
+
+```http
+Authorization: Bearer <your_api_token>
+```
+
+Generate and manage API tokens in **Settings → API → Access Tokens**. Tokens can be scoped to read-only or read-write access and can be revoked at any time. For full authentication details, see the [API Authentication](/api/authentication) page.
+
+## Common integration patterns
+
+These are the three most common ways customers connect TRACTIAN to their existing systems:
+
+**Push work orders to your ERP or CMMS**
+When TRACTIAN generates a work order from an AI insight, a webhook fires a `work_order.created` event. Your integration endpoint receives the payload and creates a corresponding work order in SAP PM or Maximo, keeping your maintenance records synchronized without manual re-entry.
+
+**Sync the asset list from your ERP**
+Use the TRACTIAN REST API (or the CMMS connector) to import your existing asset register from your ERP on a scheduled basis. This keeps TRACTIAN's asset list consistent with your authoritative source and eliminates the need to maintain two separate asset databases.
+
+**Receive fault alerts via webhook**
+Subscribe to the `insight.created` event to receive immediate notifications when TRACTIAN's AI detects a new machine fault. Route those alerts to your team's communication channel of choice — Slack, Microsoft Teams, a ticketing system, or a custom operations dashboard — so the right person is notified before the fault becomes a failure.
+
+<Note>
+  Enterprise integrations with SAP, Oracle, or IBM Maximo require a professional services engagement with the TRACTIAN implementation team. Contact your account manager or email **integrations@tractian.com** to start the process. Implementation typically takes 2–4 weeks depending on system complexity and field mapping requirements.
+</Note>

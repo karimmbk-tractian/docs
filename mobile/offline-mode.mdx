@@ -1,0 +1,79 @@
+---
+title: "Offline Mode: Stay Productive Without Connectivity"
+sidebarTitle: "Offline Mode"
+description: The TRACTIAN mobile app works without internet. Complete work orders and inspections offline — changes sync automatically when your connection returns.
+---
+
+Industrial facilities are full of places where connectivity disappears — deep inside equipment rooms, inside metal enclosures, in sub-basements, or simply in areas where Wi-Fi and cellular signals don't reach. TRACTIAN's offline mode means none of that slows you down. The app keeps a local copy of your data so you can keep working, and every change you make queues up and syncs automatically the moment your connection returns.
+
+## How offline mode works
+
+Offline mode is always on — there's nothing to enable. Here's what happens behind the scenes:
+
+<Steps>
+  <Step title="Data is cached on login">
+    When you log in with an active connection, the app downloads your assigned work orders, inspection routes, asset tree, and recent history to your device. Your data is ready even before you walk into a dead zone.
+  </Step>
+  <Step title="You work normally without a connection">
+    Once you're offline, you can still open assets, complete checklists, fill in work order forms, add photos, and create new records. The app behaves exactly as it does online — it just saves changes to local storage instead of the server.
+  </Step>
+  <Step title="Changes queue automatically">
+    Every action you take offline — closing a work order, submitting an inspection, recording a lubrication step — is added to a sync queue on your device. You can see how many pending changes are waiting in the sync status indicator at the top of the app.
+  </Step>
+  <Step title="Sync happens automatically on reconnect">
+    The moment your device regains connectivity, the app syncs all pending changes to the server in the background. You don't need to tap anything — just walk back into range. A confirmation banner lets you know the sync completed successfully.
+  </Step>
+</Steps>
+
+## What works offline
+
+| Feature | Available offline |
+|---|---|
+| View asset tree and health scores | ✅ Yes |
+| View and complete work orders | ✅ Yes |
+| Perform inspections (fill checklists, add photos) | ✅ Yes |
+| Complete lubrication routes | ✅ Yes |
+| Create new work orders | ✅ Yes |
+| Receive new push notifications | ❌ Requires connection |
+| View real-time sensor data | ❌ Requires connection |
+
+<Info>
+  Photos you capture offline are stored locally and uploaded automatically during the next sync. On slower connections, photo uploads may take a few minutes to complete after sync begins.
+</Info>
+
+## Sync status
+
+You can check the current sync state at any time by tapping the **sync indicator** in the top bar of the app. The status panel shows:
+
+- **Pending changes** — the number of actions waiting to be synced to the server
+- **Last sync time** — when the app last successfully synced with the TRACTIAN servers
+- **Connection indicator** — whether your device is currently online or offline
+
+When the indicator shows a number greater than zero, you have unsent changes on your device. Once the number returns to zero and the last sync time updates, your changes are safely stored on the server.
+
+<Tip>
+  Before heading into a low-connectivity area like a basement, confined space, or remote equipment room, open the app on a Wi-Fi or cellular connection first. This ensures you have the latest work orders, assigned routes, and asset data downloaded to your device before you go offline.
+</Tip>
+
+## Conflict resolution
+
+Conflicts happen when two technicians edit the same record while both are offline — for example, two team members both update the same work order at the same time in different parts of the facility. TRACTIAN detects these conflicts automatically when both devices sync.
+
+<Steps>
+  <Step title="Conflict detected on sync">
+    When the server receives two conflicting versions of the same record, it flags the conflict and sends both versions back to the affected users.
+  </Step>
+  <Step title="Both versions are shown side by side">
+    A conflict resolution screen appears, showing your version and the other user's version with the differences highlighted. You can see exactly what each person changed.
+  </Step>
+  <Step title="Choose or merge">
+    Select which version to keep, or manually combine the changes by editing the fields you want from each version. Both users see the same conflict screen until one of them resolves it.
+  </Step>
+  <Step title="Resolved version syncs to the server">
+    Once you confirm your resolution, the final version is sent to the server and becomes the single source of truth. The other user's app updates automatically.
+  </Step>
+</Steps>
+
+<Warning>
+  Do not force-clear the app's data or storage (through your phone's system settings) while you have pending changes. Clearing app data permanently deletes any unsynced work orders, inspection completions, and lubrication records stored on your device. Always wait for the pending changes count to reach zero before clearing app storage or reinstalling the app.
+</Warning>

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "TRACTIAN",
+  "theme": "luma",
+  "colors": {
+    "primary": "#FF6B00",
+    "light": "#FF8C33",
+    "dark": "#CC5500"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Get a Demo",
+      "href": "https://tractian.com/en"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "platform-overview"
+            ]
+          },
+          {
+            "group": "Condition Monitoring",
+            "pages": [
+              "monitoring/sensors-setup",
+              "monitoring/insights-and-diagnosis",
+              "monitoring/vibration-analysis",
+              "monitoring/alerts-and-notifications"
+            ]
+          },
+          {
+            "group": "Asset Management",
+            "pages": [
+              "assets/asset-tree",
+              "assets/asset-health",
+              "assets/inspections",
+              "assets/failure-library"
+            ]
+          },
+          {
+            "group": "CMMS",
+            "pages": [
+              "cmms/work-orders",
+              "cmms/maintenance-plans",
+              "cmms/lubrication-routes"
+            ]
+          },
+          {
+            "group": "Dashboards & Reports",
+            "pages": [
+              "dashboards/executive-mode",
+              "dashboards/oee-tracking",
+              "dashboards/engagement-analytics",
+              "dashboards/custom-reports"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/webhooks",
+              "integrations/erp-cmms"
+            ]
+          },
+          {
+            "group": "Mobile App",
+            "pages": [
+              "mobile/overview",
+              "mobile/offline-mode",
+              "mobile/deep-links"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/introduction",
+              "api/authentication",
+              "api/errors"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/assets",
+              "api/insights",
+              "api/work-orders",
+              "api/notifications",
+              "api/dashboards"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Teste de Tab",
+        "menu": [
+          {
+            "item": "Internal Documentation",
+            "products": [
+              {
+                "product": "Public API",
+                "href": "https://integrations-service.tractian.com/tractian/scalar"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://tractian.com",
+      "linkedin": "https://www.linkedin.com/company/tractian"
+    }
+  }
+}

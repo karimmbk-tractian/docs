@@ -1,0 +1,112 @@
+---
+title: "Manage Lubrication Routes and Schedules in TRACTIAN"
+sidebarTitle: "Lubrication Routes"
+description: Create structured lubrication routes in TRACTIAN to guide technicians through multi-machine tasks with the correct lubricant and quantity at each stop.
+---
+
+Lubrication routes give you a structured, repeatable way to manage one of the most critical and most frequently overlooked maintenance tasks on the plant floor. In TRACTIAN, a lubrication route is a sequenced list of machines and lubrication points that a technician works through in a single session — each stop specifying exactly which lubricant to apply and how much. And because TRACTIAN's SmartTrac sensors continuously monitor your assets for lubrication-related failures, the platform connects field execution directly to real-time equipment health.
+
+---
+
+## Why lubrication matters
+
+Improper lubrication — whether too little, too much, the wrong type, or applied too infrequently — is one of the leading causes of bearing failure in industrial equipment. Lubrication failures account for a significant share of unplanned downtime across rotating machinery including motors, pumps, fans, and gearboxes.
+
+TRACTIAN's SmartTrac sensors detect the vibration signatures associated with lubrication faults through continuous vibration analysis. This means that even between scheduled routes, the platform can identify when an asset is showing early signs of lubrication degradation — giving you the opportunity to intervene before a failure occurs.
+
+<Info>
+  TRACTIAN classifies lubrication fault as a monitored failure mode. When vibration analysis indicates a lubrication issue, the platform surfaces an insight that can be escalated directly into a corrective work order.
+</Info>
+
+---
+
+## Creating a lubrication route
+
+<Steps>
+  <Step title="Navigate to Lubrication Routes">
+    Go to **CMMS** → **Lubrication Routes** in the left sidebar, then click **+ New Route**.
+  </Step>
+  <Step title="Name the route and set frequency">
+    Enter a descriptive name for the route (e.g., "Daily Bearing Lubrication — Production Line A"). Set the recurrence frequency: **daily**, **weekly**, or **monthly**. TRACTIAN will automatically schedule the route at the selected interval.
+  </Step>
+  <Step title="Add lubrication points">
+    For each machine included in the route, add one or more lubrication points. For each point, specify:
+    - **Asset** — the machine being lubricated
+    - **Component** — the specific point (e.g., drive-end bearing, gearbox input shaft)
+    - **Lubricant type** — the exact lubricant to use (e.g., grease NLGI 2, ISO VG 68 oil)
+    - **Quantity** — the amount to apply (e.g., 5 g, 20 mL)
+
+    Providing precise lubricant type and quantity prevents both under-lubrication and over-lubrication, both of which can damage bearings.
+  </Step>
+  <Step title="Set the sequence">
+    Arrange the lubrication stops in the order the technician should visit them. Optimizing the sequence by physical location reduces walking time and makes routes faster to complete. Drag and drop stops to reorder them.
+  </Step>
+  <Step title="Assign the technician or team">
+    Select the technician or team responsible for executing this route. You can assign a default technician for every recurrence or leave the route unassigned for a supervisor to allocate each cycle.
+  </Step>
+  <Step title="Activate the route">
+    Toggle the route to **Active** and click **Save**. TRACTIAN schedules the first route execution based on the frequency you set. The assigned technician will receive the route task in their mobile app queue on the scheduled date.
+  </Step>
+</Steps>
+
+---
+
+## Performing a route in the field
+
+The TRACTIAN mobile app guides technicians through each lubrication route step by step, ensuring nothing is missed and every action is recorded.
+
+<Steps>
+  <Step title="Receive the route task">
+    On the scheduled date, the route appears in the technician's **Work Orders** queue in the mobile app. Tap the route task to open it and review the full list of stops before heading out.
+  </Step>
+  <Step title="Navigate to the first stop">
+    The app displays the first machine in the sequence along with the component name, lubricant type, and required quantity. Follow the on-screen instructions to locate the lubrication point.
+  </Step>
+  <Step title="Apply the lubricant and enter quantity">
+    Apply the specified lubricant at the correct point. Once done, enter the actual quantity applied in the app. If you applied a different amount than specified (e.g., due to visible contamination), note the reason in the comments field.
+  </Step>
+  <Step title="Mark the stop complete and move on">
+    Tap **Mark Complete** to log the stop. The app automatically advances to the next machine in the sequence. Repeat for every stop in the route.
+  </Step>
+  <Step title="Submit the completed route">
+    After completing the final stop, tap **Submit Route**. All lubrication records sync to the platform and are linked to the respective assets' maintenance histories. The route is marked as completed for this cycle.
+  </Step>
+</Steps>
+
+<Tip>
+  Use the photo attachment feature to document any abnormalities you notice during the route — grease contamination, leaking seals, or unusual heat at a bearing housing. These observations can be escalated directly into a corrective work order from the mobile app.
+</Tip>
+
+---
+
+## Lubrication records
+
+Every completed route generates a permanent log in TRACTIAN that is linked to each asset's maintenance history. This gives you and your team instant visibility into lubrication compliance and enables trend analysis over time.
+
+From the **Asset Detail** page, you can see:
+- The date and time of the last lubrication event for each component
+- The lubricant type and quantity applied
+- The technician who performed the task
+- Any notes or photos added during the route
+- A full chronological history of all past lubrication events
+
+Use these records to demonstrate compliance during audits, investigate failures after the fact, or identify assets where the lubrication interval may need to be shortened.
+
+---
+
+## AI-assisted lubrication fault detection
+
+TRACTIAN's SmartTrac sensors monitor your assets continuously between scheduled routes. When the vibration analysis engine detects the pattern associated with a lubrication fault — such as increased bearing noise caused by insufficient grease film — it generates an insight alerting you to the issue.
+
+From that insight, you can:
+- **Create a corrective work order** to address the affected asset immediately, outside the normal route schedule.
+- **Flag the next lubrication route** so the assigned technician pays special attention to the identified component.
+- **Adjust the route frequency** if recurring lubrication faults suggest the current interval is too long for that machine's operating conditions.
+
+<Info>
+  AI-generated lubrication insights are linked directly to the affected asset's history, so you can correlate sensor detections with completed route records to identify gaps — for example, assets that were overdue for lubrication at the time of the fault.
+</Info>
+
+<Note>
+  Always use the lubricant type specified in the asset's maintenance plan. Mixing incompatible lubricants — for example, applying a lithium-complex grease to a point previously serviced with a calcium-based grease — can accelerate bearing degradation rather than prevent it. When in doubt, consult the asset's OEM documentation or your lubrication engineer before changing lubricant types.
+</Note>

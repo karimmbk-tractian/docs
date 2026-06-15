@@ -1,0 +1,81 @@
+---
+title: "Authenticating with the TRACTIAN REST API Using API Keys"
+sidebarTitle: "Authentication"
+description: "Generate an API key for your TRACTIAN integration and learn how to include it in every request using the Authorization Bearer header."
+---
+
+Every request to the TRACTIAN API must be authenticated with an API key passed as a Bearer token in the `Authorization` header. API keys are issued per integration directly from your TRACTIAN account settings — there are no OAuth flows or session cookies involved. Each key carries its own set of permission scopes, so you can grant only the access each integration actually needs.
+
+<Warning>
+  Never hardcode API keys in source code or commit them to version control. Treat your API key like a password — if it is exposed, revoke it immediately and generate a new one.
+</Warning>
+
+## Getting your API key
+
+<Steps>
+  <Step title="Log in to your TRACTIAN account">
+    Go to [app.tractian.com](https://app.tractian.com) and sign in with your credentials.
+  </Step>
+  <Step title="Open API & Integrations settings">
+    Navigate to **Settings** → **API & Integrations** in the left sidebar.
+  </Step>
+  <Step title="Generate a new API key">
+    Click **Generate New API Key** to open the key creation dialog.
+  </Step>
+  <Step title="Name your key">
+    Give the key a clear, descriptive name that identifies the integration it belongs to — for example, `SAP Integration` or `Custom Dashboard`. This makes it easier to audit and revoke keys later.
+  </Step>
+  <Step title="Copy the key immediately">
+    After the key is created, copy it right away. For security reasons, TRACTIAN only shows the full key value once. If you lose it, you'll need to revoke it and generate a new one.
+  </Step>
+  <Step title="Store it securely">
+    Save your API key in a secrets manager (such as AWS Secrets Manager, HashiCorp Vault, or your CI/CD platform's secret store). Do not paste it into configuration files that are committed to source control.
+  </Step>
+</Steps>
+
+## Using your API key
+
+Pass your API key in the `Authorization` header as a Bearer token on every request. For company-scoped endpoints, also include the `x-company-id` header:
+
+```bash
+curl https://api.tractian.com/v1/assets \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+
+If the key is missing or invalid, the API returns a `401 Unauthorized` response. If the key is valid but lacks permission for the requested resource, you'll receive `403 Forbidden`. See the [Errors](/api/errors) reference for details on both.
+
+<Tip>
+  Store `YOUR_API_KEY` and `YOUR_COMPANY_ID` as environment variables in your application (e.g., `TRACTIAN_API_KEY` and `TRACTIAN_COMPANY_ID`) and read them at runtime. This keeps credentials out of your codebase entirely.
+</Tip>
+
+## API key scopes
+
+When you generate a key, you choose which scopes to grant it. Requests that require a scope your key doesn't have will be rejected with `403 Forbidden`. Apply the principle of least privilege — grant only the scopes the integration actually needs.
+
+<Note>
+  The scope names shown below are representative examples of the access categories available. The exact scope identifiers displayed during key creation in your account settings are the authoritative values — refer to the **API & Integrations** settings panel to see all scopes currently available for your account.
+</Note>
+
+| Scope (example) | Access granted |
+|---|---|
+| `assets:read` | Read asset data, sensor readings, and asset health status |
+| `assets:write` | Create and update assets |
+| `insights:read` | Read AI-generated fault detections and anomaly alerts |
+| `work_orders:read` | Read work orders and their associated tasks |
+| `work_orders:write` | Create and update work orders |
+| `notifications:write` | Send and manage asset health notifications |
+
+<Note>
+  Each API key is subject to a rate limit of **1,000 requests per minute**. If you exceed this limit, the API returns `429 Too Many Requests`. Check the `X-RateLimit-Remaining` header in every response to monitor your current usage. See the [Errors](/api/errors) page for guidance on handling rate limit responses.
+</Note>
+
+## Revoking a key
+
+If a key is compromised or no longer needed, revoke it immediately:
+
+1. Go to **Settings** → **API & Integrations** in [app.tractian.com](https://app.tractian.com).
+2. Find the key you want to revoke in the list.
+3. Click **Revoke** next to the key name and confirm.
+
+Revoking a key is immediate and permanent. Any requests made with that key after revocation will return `401 Unauthorized`. Generate a new key and update your integration if you need to restore access.

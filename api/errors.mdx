@@ -1,0 +1,95 @@
+---
+title: "TRACTIAN API Error Codes and Troubleshooting Guide"
+sidebarTitle: "Errors"
+description: "Reference for TRACTIAN API HTTP status codes, error response format, and how to handle common errors like 401, 403, 404, 422, and 429."
+---
+
+When a request fails, the TRACTIAN API always returns a structured JSON body alongside the appropriate HTTP status code. Every error response follows the same shape — an `error` object containing a machine-readable `code`, a human-readable `message`, and an optional `details` object with additional context. Always inspect `error.code` in your error-handling logic rather than relying solely on the HTTP status code; it gives you the most precise signal about what went wrong.
+
+<Tip>
+  Log `error.code` alongside the HTTP status in your application's error reporting. Two different problems (for example, a missing field and a wrong field type) can both produce a `422` status, but `error.code` and `error.details` will tell you exactly which validation rule failed.
+</Tip>
+
+## Error response format
+
+Every error response from the API has the following structure:
+
+```json
+{
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Asset with id 'abc123' was not found",
+    "details": {}
+  }
+}
+```
+
+<ResponseField name="error.code" type="string" required>
+  A stable, uppercase snake-case identifier for the error type. Use this in your code's error-handling logic.
+</ResponseField>
+
+<ResponseField name="error.message" type="string" required>
+  A human-readable description of the error, suitable for logging and debugging. Do not display this directly to end users.
+</ResponseField>
+
+<ResponseField name="error.details" type="object">
+  An optional object with additional structured context — for example, a map of field names to validation failure reasons on a `422` response.
+</ResponseField>
+
+## HTTP status codes
+
+| Status | Error code | Meaning | How to resolve |
+|---|---|---|---|
+| `400` | `VALIDATION_ERROR` | The request parameters or body are malformed | Check your request body against the endpoint's parameter documentation |
+| `401` | `UNAUTHORIZED` | The API key is missing, expired, or invalid | Verify the `Authorization: Bearer YOUR_API_KEY` header is present and correct |
+| `403` | `FORBIDDEN` | The API key doesn't have permission for this resource | Check the [key's scopes](/api/authentication#api-key-scopes) and enable the required scope in your account settings |
+| `404` | `RESOURCE_NOT_FOUND` | The requested resource doesn't exist | Double-check the resource ID in the URL path or request body |
+| `409` | `CONFLICT` | The request conflicts with existing state | The resource may already exist — use a GET request to check before attempting to create |
+| `422` | `VALIDATION_ERROR` | The request body failed schema validation | Check that all required fields are present and that values match the expected types and formats |
+| `429` | `RATE_LIMIT_EXCEEDED` | You have exceeded the rate limit for your API key | Wait until the time indicated by `X-RateLimit-Reset` before retrying |
+| `500` | `INTERNAL_ERROR` | An unexpected error occurred on the TRACTIAN platform | Retry the request with exponential backoff; contact TRACTIAN support if the error persists |
+
+## Rate limiting
+
+Every API key is limited to **1,000 requests per minute**. The API includes rate limit information in the response headers of every request — success or failure — so you can monitor your usage proactively:
+
+| Header | Type | Description |
+|---|---|---|
+| `X-RateLimit-Limit` | integer | Total requests allowed per minute for this key |
+| `X-RateLimit-Remaining` | integer | Requests remaining in the current window |
+| `X-RateLimit-Reset` | integer | Unix timestamp (seconds) when the current window resets |
+
+When you exceed the limit, the API responds with `429 Too Many Requests`. Read the `X-RateLimit-Reset` header to determine how long to wait before retrying. The following example shows a simple retry handler in Python:
+
+```python
+import time
+import requests
+
+def make_request_with_retry(url, headers, max_retries=3, attempt=0):
+    response = requests.get(url, headers=headers)
+    if response.status_code == 429 and attempt < max_retries:
+        reset_timestamp = int(response.headers.get("X-RateLimit-Reset", 0))
+        wait_seconds = max(1, reset_timestamp - int(time.time()))
+        time.sleep(wait_seconds)
+        return make_request_with_retry(url, headers, max_retries, attempt + 1)
+    return response
+```
+
+<Note>
+  For production integrations, prefer exponential backoff with jitter over a fixed sleep. This prevents a fleet of workers from all resuming simultaneously after a rate-limit window resets.
+</Note>
+
+## Idempotency
+
+POST requests that create resources in TRACTIAN are **not idempotent** — submitting the same request twice will attempt to create two separate resources and may return a `409 Conflict` if a uniqueness constraint is violated.
+
+Before issuing a POST to create a resource, use the corresponding GET endpoint to check whether the resource already exists. This is especially important in retry logic — if a POST times out before you receive a response, the resource may have already been created server-side.
+
+```bash
+# Check before you create
+curl https://api.tractian.com/v1/assets?externalId=MY_EXTERNAL_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+
+If the GET returns a result, use the existing resource's ID in subsequent requests rather than issuing another POST.

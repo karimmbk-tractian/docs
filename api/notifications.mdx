@@ -1,0 +1,436 @@
+---
+title: "Notifications API: Send Alerts via Push, Email, and SMS"
+sidebarTitle: "Notifications"
+description: "Use the TRACTIAN Notifications API to send multi-channel alerts to users via push notifications, email, SMS, WhatsApp, and voice calls."
+---
+
+The Notifications API lets you send targeted, multi-channel alerts to TRACTIAN users directly from your own services and automation pipelines. Route critical machine health alerts, work order assignments, and operational escalations through TRACTIAN's delivery infrastructure — including mobile push, email, SMS, WhatsApp, and in-app notifications — without building separate messaging infrastructure yourself. Each notification request can target multiple channels simultaneously and is delivered to one or more users by their TRACTIAN user IDs.
+
+## Authentication
+
+All requests require an `Authorization` header with your API key and an `x-company-id` header.
+
+```bash
+Authorization: Bearer {api_key}
+x-company-id: {companyId}
+```
+
+---
+
+## Notification channels
+
+TRACTIAN supports six delivery channels. Each channel has its own payload structure within a single notification request.
+
+| Channel | Delivery method | Required fields |
+|---|---|---|
+| `push` | Mobile push notification (iOS and Android) | `title`, `content` |
+| `email` | Email | `title` (subject line) and/or `content` (HTML body) |
+| `sms` | SMS | `content` (plain text body) |
+| `whatsapp` | WhatsApp message template | `contentSid`, `contentVariables` |
+| `phoneCall` | Outbound voice call | `content` (spoken message) |
+| `platform` | In-app notification in TRACTIAN | Structured content object |
+
+Include any combination of these channel blocks in a single `POST /v1/notifications` request. Channels that are present in the request body are attempted for each receiver; channels that are absent are skipped entirely.
+
+<Note>
+  If a receiver does not have a phone number on file in their TRACTIAN profile, the `sms` and `whatsapp` channels are silently skipped for that user. No error is returned — the remaining channels are still delivered normally.
+</Note>
+
+---
+
+## Send a notification
+
+`POST /v1/notifications`
+
+Sends a notification to one or more users across one or more channels. The request succeeds once the messages are accepted for delivery.
+
+<CodeGroup>
+```bash Push + Email
+curl -X POST https://api.tractian.com/v1/notifications \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "receiverIds": ["user-123", "user-456"],
+    "push": {
+      "title": "Critical Alert: Pump Motor #3",
+      "content": "Bearing wear detected. Immediate inspection required.",
+      "data": { "assetId": "motor-001", "insightId": "insight-abc123" }
+    },
+    "email": {
+      "title": "Critical Alert: Pump Motor #3",
+      "content": "<p>Bearing wear detected on Pump Motor #3. Immediate inspection required.</p>"
+    }
+  }'
+```
+
+```bash SMS Only
+curl -X POST https://api.tractian.com/v1/notifications \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "receiverIds": ["user-123"],
+    "sms": {
+      "content": "TRACTIAN Alert: Critical fault on Pump Motor #3. Check the app for details."
+    }
+  }'
+```
+
+```bash WhatsApp
+curl -X POST https://api.tractian.com/v1/notifications \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "receiverIds": ["user-123"],
+    "whatsapp": {
+      "contentSid": "HXabc123def456",
+      "contentVariables": {
+        "1": "Pump Motor #3",
+        "2": "bearing wear",
+        "3": "2025-01-15"
+      }
+    }
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="receiverIds" type="array" required>
+  Array of TRACTIAN user IDs to receive the notification. At least one user ID is required.
+</ParamField>
+
+<ParamField body="push" type="object">
+  Push notification payload for iOS and Android devices.
+
+  <Expandable title="Push fields">
+    <ParamField body="title" type="string" required>
+      Notification title displayed in the device banner.
+    </ParamField>
+    <ParamField body="content" type="string" required>
+      Notification body text.
+    </ParamField>
+    <ParamField body="data" type="object">
+      Flat key-value pairs attached to the push payload. All values must be primitives (string, number, boolean). Use this to pass `assetId`, `insightId`, or other deep-link data to the mobile app.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="email" type="object">
+  Email delivery payload.
+
+  <Expandable title="Email fields">
+    <ParamField body="title" type="string">
+      Email subject line. At least one of `title` or `content` must be provided.
+    </ParamField>
+    <ParamField body="content" type="string">
+      HTML email body. At least one of `title` or `content` must be provided.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="sms" type="object">
+  SMS delivery payload.
+
+  <Expandable title="SMS fields">
+    <ParamField body="content" type="string" required>
+      Plain-text message body. Keep under 160 characters for single-segment SMS delivery.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="whatsapp" type="object">
+  WhatsApp delivery payload using an approved message template.
+
+  <Expandable title="WhatsApp fields">
+    <ParamField body="contentSid" type="string" required>
+      Content Template SID identifying the approved WhatsApp message template.
+    </ParamField>
+    <ParamField body="contentVariables" type="object" required>
+      Key-value map of template variable substitutions. Keys are positional string indices (`"1"`, `"2"`, etc.).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="phoneCall" type="object">
+  Outbound voice call payload.
+
+  <Expandable title="Phone call fields">
+    <ParamField body="content" type="string" required>
+      The spoken message delivered to the recipient when they answer the call.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="platform" type="object">
+  In-app notification payload for the TRACTIAN web and mobile platform.
+
+  <Expandable title="Platform fields">
+    <ParamField body="title" type="string" required>
+      Notification title displayed in the in-app notification center.
+    </ParamField>
+    <ParamField body="content" type="string" required>
+      Notification body text.
+    </ParamField>
+    <ParamField body="link" type="string">
+      Deep link URL within the TRACTIAN platform (e.g., to a specific asset or insight).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Response
+
+```json
+{
+  "notificationId": "notif-def456",
+  "status": "accepted",
+  "receiverCount": 2,
+  "channels": ["push", "email"],
+  "createdAt": "2025-01-15T10:35:00Z"
+}
+```
+
+<ResponseField name="notificationId" type="string">
+  Unique identifier for this notification delivery request.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Delivery acceptance status. `accepted` means messages have been queued for delivery.
+</ResponseField>
+
+<ResponseField name="receiverCount" type="integer">
+  Number of unique receivers targeted by this notification.
+</ResponseField>
+
+<ResponseField name="channels" type="array">
+  List of channels that were included in this notification request.
+</ResponseField>
+
+---
+
+## Subscribe a user to a topic
+
+`PUT /v1/subscribers/:subscriberId/topics/:topic/subscribe`
+
+Subscribes a user to a named alert topic. Topics let you group users by role, area, or asset type so you can send targeted notifications without hardcoding individual user IDs in your integration. For example, create topics like `critical-assets`, `area-3-alerts`, or `maintenance-managers` and publish to the topic to reach all subscribed users at once.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://api.tractian.com/v1/subscribers/user-123/topics/critical-assets/subscribe \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="subscriberId" type="string" required>
+  The TRACTIAN user ID to subscribe.
+</ParamField>
+
+<ParamField path="topic" type="string" required>
+  The topic identifier to subscribe the user to. Use lowercase, hyphen-separated slugs (e.g., `area-1-alerts`, `critical-assets`).
+</ParamField>
+
+### Response
+
+```json
+{
+  "subscriberId": "user-123",
+  "status": "subscribed",
+  "createdAt": "2025-01-09T20:10:40.670Z",
+  "createdByUserId": "user-123",
+  "updatedAt": "2025-01-09T20:10:40.670Z",
+  "updatedByUserId": "user-123",
+  "id": "67802d406b33c59f8af4ef79"
+}
+```
+
+<ResponseField name="id" type="string">
+  Unique identifier for the subscription record.
+</ResponseField>
+
+<ResponseField name="subscriberId" type="string">
+  The user ID that was subscribed.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Subscription status: `subscribed`.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO 8601 timestamp of when the subscription was first created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string">
+  ISO 8601 timestamp of the most recent update to this subscription.
+</ResponseField>
+
+---
+
+## Unsubscribe a user from a topic
+
+`PUT /v1/subscribers/:subscriberId/topics/:topic/unsubscribe`
+
+Removes a user from a named alert topic. The user will no longer receive notifications published to that topic.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://api.tractian.com/v1/subscribers/user-123/topics/critical-assets/unsubscribe \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="subscriberId" type="string" required>
+  The TRACTIAN user ID to unsubscribe.
+</ParamField>
+
+<ParamField path="topic" type="string" required>
+  The topic identifier to remove the user from.
+</ParamField>
+
+### Response
+
+```json
+{
+  "subscriberId": "user-123",
+  "status": "unsubscribed",
+  "createdAt": "2025-01-09T19:29:01.010Z",
+  "createdByUserId": "user-123",
+  "updatedAt": "2025-01-09T19:29:39.714Z",
+  "updatedByUserId": "user-123",
+  "id": "6780237d55f66e94d1acfb4e"
+}
+```
+
+<ResponseField name="id" type="string">
+  Unique identifier for the subscription record.
+</ResponseField>
+
+<ResponseField name="subscriberId" type="string">
+  The user ID that was unsubscribed.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Subscription status: `unsubscribed`.
+</ResponseField>
+
+---
+
+## Get topic subscription details
+
+`GET /v1/subscriptions/:topic`
+
+Returns the list of users currently subscribed to a given topic.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/subscriptions/critical-assets \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="topic" type="string" required>
+  The topic identifier to query.
+</ParamField>
+
+### Response
+
+```json
+{
+  "topic": "critical-assets",
+  "subscriberCount": 5,
+  "subscribers": [
+    { "subscriberId": "user-123", "subscribedAt": "2025-01-10T08:00:00Z" },
+    { "subscriberId": "user-456", "subscribedAt": "2025-01-12T14:30:00Z" }
+  ]
+}
+```
+
+<ResponseField name="topic" type="string">
+  The topic identifier queried.
+</ResponseField>
+
+<ResponseField name="subscriberCount" type="integer">
+  Total number of active subscribers on this topic.
+</ResponseField>
+
+<ResponseField name="subscribers" type="array">
+  List of subscriber objects with their user ID and subscription timestamp.
+</ResponseField>
+
+<Tip>
+  Use topics for area-based or role-based alert routing instead of hardcoding receiver IDs in your integration. When technician assignments change or new users join a team, you only need to update topic subscriptions — not your notification-sending code.
+</Tip>
+
+---
+
+## Send an ad-hoc message
+
+`POST /v1/messages`
+
+Sends a raw, ad-hoc message that is not modeled as a platform notification. Use this endpoint when you need to deliver one-off messages — such as system alerts or operational broadcasts — outside the standard notification lifecycle. Unlike `POST /v1/notifications`, ad-hoc messages are not stored as notification records and do not appear in the in-app notification center.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/messages \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "receiverIds": ["user-123"],
+    "push": {
+      "title": "Scheduled maintenance window starts in 30 minutes",
+      "content": "The system will be unavailable from 02:00 to 04:00 UTC."
+    },
+    "email": {
+      "title": "Scheduled maintenance window starts in 30 minutes",
+      "content": "<p>The system will be unavailable from 02:00 to 04:00 UTC.</p>"
+    }
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+The request body follows the same structure as `POST /v1/notifications` — include a `receiverIds` array and any combination of channel blocks (`push`, `email`, `sms`, `whatsapp`, `phoneCall`, `platform`).
+
+<ParamField body="receiverIds" type="array" required>
+  Array of TRACTIAN user IDs to receive the message.
+</ParamField>
+
+<ParamField body="push" type="object">
+  Push notification payload. See [Send a notification](#send-a-notification) for field details.
+</ParamField>
+
+<ParamField body="email" type="object">
+  Email payload. See [Send a notification](#send-a-notification) for field details.
+</ParamField>
+
+<ParamField body="sms" type="object">
+  SMS payload. See [Send a notification](#send-a-notification) for field details.
+</ParamField>
+
+<ParamField body="whatsapp" type="object">
+  WhatsApp payload. See [Send a notification](#send-a-notification) for field details.
+</ParamField>
+
+<ParamField body="phoneCall" type="object">
+  Voice call payload. See [Send a notification](#send-a-notification) for field details.
+</ParamField>
+
+### Response
+
+Returns `200 OK` on success. No notification record is created.
+
+<Note>
+  Use `POST /v1/messages` for transient, ad-hoc delivery only. For alerts that users should be able to review in the TRACTIAN notification center, use `POST /v1/notifications` instead.
+</Note>

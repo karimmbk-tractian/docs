@@ -1,0 +1,131 @@
+---
+title: "Platform Engagement Analytics for Operations Leaders"
+sidebarTitle: "Engagement Analytics"
+description: Track how your team uses TRACTIAN — active users, sessions, insights reviewed, and actions taken — with TRACTIAN's engagement analytics dashboard.
+---
+
+A predictive maintenance platform only delivers value when your team actually uses it. Engagement Analytics lets operations managers and reliability leaders see exactly how their people are interacting with TRACTIAN — who is reviewing AI insights, how often technicians are logging in, and whether platform adoption is growing over time. Use this data to identify power users, coach under-engaged team members, and tie platform activity to maintenance outcomes.
+
+## Accessing engagement analytics
+
+Navigate to **Dashboards → Engagement** from the left sidebar. The engagement dashboard is visible to users with the **Manager** or **Admin** role. Standard technician accounts cannot access this view.
+
+## KPI overview
+
+The top of the engagement dashboard shows summary cards covering the selected date range:
+
+| Metric | What it tells you |
+|---|---|
+| **Active Users** | Number of unique users who logged in at least once during the period |
+| **Inactive Users** | Number of users who had zero sessions in the period |
+| **Total Sessions** | Total number of individual login sessions across all users |
+| **Pages Visited** | Total page views across all users and sessions |
+| **Total Clicks** | Sum of all recorded interaction events (buttons, links, insight actions) |
+| **Total Duration** | Cumulative time all users spent in the platform, in minutes |
+| **Avg Session Duration** | Mean time a user spends in a single session, in minutes |
+| **Avg Sessions per Active User** | How frequently each active user is returning to the platform |
+| **Avg Pages per Session** | How deeply users navigate the platform in a typical session |
+
+These KPIs give you an at-a-glance read on whether platform usage is healthy. A high active-user count paired with low pages-per-session can signal that users are checking in but not diving deep into insights — a coaching opportunity.
+
+## Date range filtering
+
+Use the **date range picker** in the top-right corner of the dashboard to analyze any time period. You can select:
+
+- **Preset ranges** — Last 7 days, Last 30 days, Last 90 days, This month, Last month
+- **Custom range** — Click the calendar icon and pick a start and end date
+
+All KPI cards, charts, and tables update instantly when you change the date range. Use custom ranges to compare activity around specific events — a training session, a new feature rollout, or the start of a maintenance campaign.
+
+## Trend charts
+
+Two time-series charts sit below the KPI cards:
+
+**Daily Activity** shows the number of active users for each calendar day in the selected range. Spikes often correspond to shift handovers, weekly planning meetings, or periods of heightened machine activity. Consistent gaps (low activity on certain days) can highlight shift coverage issues.
+
+**Actions Over Time** breaks down daily interaction volume into three streams:
+- **Insights checked** — users opening and reviewing AI fault insights
+- **Failure events** — users logging or acknowledging failure events
+- **Clicks** — total interaction events for all other platform actions
+
+Compare the two charts side by side to see whether upticks in user activity translate into meaningful diagnostic actions or are mostly passive browsing.
+
+## User activity table
+
+Below the charts, the **User Activity Table** lists every user in your organization with the following columns:
+
+| Column | Description |
+|---|---|
+| **Name** | User's full name and role |
+| **Days Accessed** | Number of distinct calendar days with at least one session |
+| **Sessions** | Total sessions in the period |
+| **Pages Visited** | Total page views |
+| **Clicks** | Total interaction events |
+| **Avg Duration** | Mean session length in minutes |
+| **Last Seen** | Date of the most recent login |
+
+The table is paginated (25 rows per page by default) and sortable by any column. Click any row to expand a **per-user daily trend** chart showing that individual's activity broken down day by day — useful when you want to understand a user's patterns in more detail or verify that a new team member is onboarding successfully.
+
+## Leaderboard
+
+The **Leaderboard** panel shows your top N most active users for the selected period. Use the **Sort by** dropdown to rank users by sessions, pages visited, clicks, or average session duration.
+
+The leaderboard serves two purposes: it helps you identify internal champions who can mentor colleagues, and it highlights the gap between your most and least engaged users so you know where to focus adoption efforts.
+
+<Tip>
+  Share the leaderboard in your weekly maintenance review meeting. Recognizing your top platform users publicly encourages healthy adoption competition and surfaces the team members who are getting the most value from AI insights.
+</Tip>
+
+## Exporting data
+
+Click the **Export CSV** button above the User Activity Table to download the full dataset for the selected date range. The CSV includes all table columns for every user, unaffected by pagination. Use the export for deeper analysis in Excel or for sharing usage reports with plant leadership.
+
+## API reference
+
+If you want to pull engagement data programmatically — for example, to feed it into a company-wide operations dashboard — use the engagement API.
+
+All engagement API requests require two headers:
+
+```http
+Authorization: Bearer <your_token>
+x-company-id: <your_company_id>
+```
+
+**Get engagement overview**
+
+```http
+GET /v1/engagement/overview?startDate=2025-01-01&endDate=2025-01-31
+Authorization: Bearer <your_token>
+x-company-id: <your_company_id>
+```
+
+**Response**
+
+```json
+{
+  "totalUsers": 120,
+  "activeUsers": 87,
+  "inactiveUsers": 33,
+  "totalSessions": 412,
+  "totalPagesVisited": 8540,
+  "totalClickCount": 42300,
+  "totalDurationMinutes": 9820.5,
+  "avgSessionMinutes": 23.8,
+  "avgSessionsPerActiveUser": 4.7,
+  "avgPagesPerSession": 20.7
+}
+```
+
+The following additional endpoints let you retrieve more granular data:
+
+| Endpoint | Description |
+|---|---|
+| `GET /v1/engagement/access-trend` | Daily time series of active users, sessions, pages visited, and clicks |
+| `GET /v1/engagement/actions-summary` | Daily breakdown of clicks, insights checked, and failure events |
+| `GET /v1/engagement/leaderboard` | Top N users ranked by sessions, pages visited, clicks, or duration |
+| `GET /v1/engagement/by-user-table` | Paginated per-user table with full activity details |
+| `GET /v1/engagement/user-trend` | Per-user daily rows, fetched lazily when you expand a user row |
+| `GET /v1/engagement/metadata` | Schema discovery — returns available dimensions, filters, and measure names |
+| `POST /v1/engagement/query` | Freeform analytics query with custom dimensions and filters |
+
+Use `POST /v1/engagement/query` for custom analytics — call `GET /v1/engagement/metadata` first to discover the available filter fields and dimensions for your organization.

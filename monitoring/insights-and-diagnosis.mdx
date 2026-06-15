@@ -1,0 +1,173 @@
+---
+title: "Machine Health Insights and AI Fault Diagnosis"
+sidebarTitle: "Insights & Diagnosis"
+description: "Learn how TRACTIAN's AI detects machine faults, interprets insights by criticality, and guides you from alert to corrective action."
+---
+
+Insights are TRACTIAN's way of translating raw sensor data into actionable information about your machines. Every 30 minutes, the Auto Diagnosis™ engine analyzes vibration spectra, temperature trends, and RPM data from each SmartTrac sensor and compares them against signatures for 35+ known failure modes. When a pattern matches, an insight is created — complete with a diagnosis, the likely affected component, and a recommended course of action.
+
+---
+
+## Understanding insights
+
+Each insight is assigned a **criticality level** that reflects the severity of the detected fault and how urgently you should respond. Criticality also accounts for the strategic importance of the asset itself — a fault on a critical production line asset will escalate sooner than the same fault on a redundant auxiliary machine.
+
+<CardGroup cols={2}>
+  <Card title="Critical" icon="circle-exclamation" color="#dc2626" href="/monitoring/alerts-and-notifications">
+    Failure is imminent or already in progress. Immediate intervention is required to prevent unplanned downtime, secondary damage, or safety incidents. Stop the machine if conditions allow.
+  </Card>
+  <Card title="High" icon="triangle-exclamation" color="#ea580c" href="/monitoring/alerts-and-notifications">
+    Significant fault detected. Schedule corrective maintenance within days, not weeks. Continued operation without action risks rapid deterioration.
+  </Card>
+  <Card title="Medium" icon="circle-minus" color="#ca8a04" href="/monitoring/alerts-and-notifications">
+    Early-stage fault or degradation trend detected. Plan maintenance within your next scheduled window. Monitor for changes in criticality.
+  </Card>
+  <Card title="Low" icon="circle-info" color="#2563eb" href="/monitoring/alerts-and-notifications">
+    Minor anomaly or deviation from baseline. Log for tracking and reassess during routine inspections. No immediate action required.
+  </Card>
+</CardGroup>
+
+<Info>
+  Asset criticality configuration influences when alerts are triggered. A machine marked as **Critical** in your asset settings will generate insights earlier in the fault progression than one marked as non-critical. Review your asset criticality classifications under **Assets > Settings** to ensure alerts fire at the right threshold for each machine.
+</Info>
+
+---
+
+## Failure modes detected
+
+TRACTIAN's AI engine detects over 35 distinct failure modes across five major categories.
+
+<Accordion title="Bearing failures">
+  Bearing faults are among the most common and most detectable failure modes in rotating machinery. TRACTIAN identifies:
+
+  - **Bearing wear (inner race)** — defect on the inner ring, typically from fatigue or contamination
+  - **Bearing wear (outer race)** — defect on the outer ring, often from static overload or misalignment
+  - **Bearing erosion due to current leaks** — pitting caused by stray electrical currents passing through the bearing (common in VFD-driven motors)
+</Accordion>
+
+<Accordion title="Mechanical issues">
+  Mechanical faults span misalignment, looseness, and structural resonance issues:
+
+  - **Misalignment** — angular or parallel shaft misalignment between coupled machines
+  - **Unbalance** — uneven mass distribution on a rotating element
+  - **Structural mechanical looseness** — loose baseplate, fasteners, or mounting feet
+  - **Rotating mechanical looseness** — looseness within the rotating assembly (e.g., loose impeller or coupling)
+  - **Resonance** — operating speed near a structural natural frequency, amplifying vibration
+  - **Belt wear** — fatigue or stretching in belt-driven systems
+  - **Pulley wear** — groove wear or eccentricity in belt drive pulleys
+  - **Gear wear** — progressive tooth surface degradation
+  - **Gear eccentricity** — off-center gear rotation producing once-per-revolution modulation
+</Accordion>
+
+<Accordion title="Electrical failures">
+  Electrical fault signatures are detectable in vibration and temperature data from motors:
+
+  - **Loose rotor bars** — broken or cracked rotor bars in squirrel-cage induction motors
+  - **Loose stator windings** — winding movement under electromagnetic forces
+  - **Phase unbalance** — unequal voltage or current across motor phases
+  - **Stator eccentricity** — non-uniform air gap between stator and rotor
+  - **Rotor eccentricity** — dynamic eccentricity of the rotor during operation
+  - **Shaft eccentricity** — off-center shaft rotation producing once-per-revolution displacement, often caused by a bent shaft or improper fit between shaft and rotor
+  - **Overvoltage / overload** — sustained operation beyond rated electrical parameters
+</Accordion>
+
+<Accordion title="Lubrication issues">
+  Inadequate or degraded lubrication creates characteristic high-frequency vibration signatures:
+
+  - **Lubrication failure** — insufficient lubricant film, causing metal-to-metal contact in bearings or gears
+  - **Over-lubrication** — excess grease causing churning and elevated temperature
+</Accordion>
+
+<Accordion title="Fluid machinery issues">
+  For pumps, compressors, and fans, TRACTIAN detects flow-related fault conditions:
+
+  - **Cavitation** — vapor bubble collapse inside pumps, detectable through high-frequency impulsive vibration
+  - **Turbulence** — unstable flow conditions producing broadband vibration elevation
+  - **Vane passage** — periodic pressure pulses generated each time an impeller vane passes the volute cutwater, producing vibration at vane-pass frequency
+  - **Blade passage** — periodic forces generated by fan or compressor blades passing stationary components, producing vibration at blade-pass frequency
+  - **Pump recirculation** — reverse flow within the pump impeller at low-flow conditions, producing low-frequency vibration and cavitation-like noise
+  - **Overheating** — abnormal temperature rise beyond expected operating range
+</Accordion>
+
+---
+
+## Acting on an insight
+
+When a new insight appears, follow this workflow to move from detection to resolution:
+
+<Steps>
+  <Step title="Navigate to Monitoring > Insights">
+    From the main menu, go to **Monitoring > Insights**. You'll see all active insights across your asset tree, sorted by criticality. Use the filters to narrow by asset group, machine type, or failure category.
+  </Step>
+
+  <Step title="Open the insight and review the diagnosis">
+    Click any insight to open the detail view. Here you'll find:
+
+    - **Detected fault** — the specific failure mode identified
+    - **Affected component** — bearing, shaft, coupling, stator, etc.
+    - **Confidence level** — how strongly the data matches the fault signature
+    - **Supporting data** — the vibration spectrum, trend chart, and temperature readings that triggered the insight
+    - **Recommended actions** — prioritized steps TRACTIAN suggests for this fault type
+  </Step>
+
+  <Step title="Review the AI-generated technical report">
+    Each insight includes an auto-generated technical report summarizing the fault evidence in plain language. The report explains which frequency components were elevated, what fault frequency calculations were applied, and how the current reading compares to the asset's historical baseline.
+  </Step>
+
+  <Step title="Perform the suggested sensory inspection">
+    For many fault types, TRACTIAN will recommend a physical inspection before scheduling a repair — for example, checking for looseness by hand, listening for unusual noise, or feeling for abnormal heat. Complete this inspection and record your findings in the **Inspection Notes** field on the insight.
+  </Step>
+
+  <Step title="Create a work order from the insight">
+    Once you've confirmed the fault, click **Create Work Order** directly from the insight page. The work order is pre-populated with the asset name, fault description, and recommended actions. Assign it to a technician, set a due date, and submit.
+  </Step>
+
+  <Step title="Mark the insight as confirmed or dismissed">
+    After inspection, close the loop by updating the insight status:
+
+    - **Confirmed** — the fault was verified in the field; the work order is active
+    - **Dismissed** — the inspection found no fault; log the reason so the AI can refine its baseline
+
+    Marking insights keeps your dashboard clean and feeds feedback back into the AI engine to improve future detection accuracy.
+  </Step>
+</Steps>
+
+---
+
+## Supervised Analysis
+
+When an insight is ambiguous or the fault signature is unusual, you can request a **Supervised Analysis** — a report validated by a TRACTIAN reliability engineer who reviews the spectral data and confirms or refines the AI diagnosis.
+
+**When to request Supervised Analysis:**
+
+- The AI diagnosis doesn't match what you're observing in the field
+- Multiple overlapping fault signatures are present and you need expert prioritization
+- You're dealing with a machine type or operating condition that's outside your team's diagnostic experience
+- A Critical insight needs a second opinion before you justify a major repair or shutdown
+
+**How to request it:**
+
+1. Open the insight detail page
+2. Click **Request Supervised Analysis**
+3. Add any notes about what you've observed on-site
+4. Submit — a TRACTIAN reliability engineer will review the data and return a validated report, typically within one business day
+
+<Note>
+  Supervised Analysis availability depends on your TRACTIAN subscription plan. Contact your Customer Success Manager if you don't see the option on your insight pages.
+</Note>
+
+---
+
+## Events Timeline
+
+The **Events Timeline** gives you a chronological view of every insight, work order, inspection note, and sampling event recorded for a specific asset. Access it from the asset detail page under the **History** tab.
+
+Use the timeline to:
+
+- **Trace fault progression** — see when a low-criticality insight first appeared and how it evolved into a high or critical alert over time
+- **Correlate maintenance actions with health changes** — verify that a repair actually resolved the fault by checking whether the insight cleared after the work order was closed
+- **Build FMEA and RCA documentation** — export the timeline as evidence for root cause analysis or failure mode and effects analysis
+
+<Tip>
+  Over time, the Events Timeline becomes one of your most valuable reliability tools. Regularly reviewing the history of your highest-criticality assets lets you identify recurring failure patterns, adjust PM intervals, and build a data-driven case for equipment upgrades.
+</Tip>

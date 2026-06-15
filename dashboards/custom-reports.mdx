@@ -1,0 +1,64 @@
+---
+title: "Generate Custom Maintenance Reports in TRACTIAN"
+sidebarTitle: "Custom Reports"
+description: Build, schedule, and export custom reports on asset health, work order history, and maintenance KPIs from TRACTIAN's reporting module.
+---
+
+TRACTIAN's reporting module turns your operational data into structured documents you can share with plant leadership, hand to auditors, or use as the basis for maintenance planning meetings. Whether you need a one-time export of last quarter's work orders or a recurring Monday-morning compliance summary emailed to your team automatically, custom reports let you define exactly what you need and get it delivered in the format that works for your workflow.
+
+## Report types
+
+TRACTIAN offers five built-in report templates, each covering a distinct area of maintenance management:
+
+| Report type | What it covers |
+|---|---|
+| **Asset Health Report** | Current and historical health scores for selected assets or areas, including open insights and criticality trends |
+| **Work Order Summary** | All work orders in a period — created, completed, overdue — with status, assignee, and resolution time |
+| **Maintenance Compliance Report** | Preventive maintenance task completion rates against scheduled targets; identifies missed or late PMs |
+| **Failure History Report** | Chronological log of confirmed failures, root cause classifications, and downtime durations per asset |
+| **OEE Report** | Availability, Performance, and Quality metrics with Six Big Losses breakdown for OEE-enabled machines |
+
+## Creating a report
+
+<Steps>
+  <Step title="Navigate to the Reports module">
+    Click **Reports** in the left navigation, then click **New Report** in the top-right corner of the reports list.
+  </Step>
+  <Step title="Select a report type">
+    Choose one of the five report templates from the list. A brief description of each template appears on the right. Click **Select** to proceed.
+  </Step>
+  <Step title="Set your filters">
+    Configure the report scope using the filter panel:
+    - **Date range** — Select a start and end date for the data included in the report.
+    - **Asset(s)** — Filter to one or more specific assets, or leave blank to include all assets.
+    - **Area** — Narrow the report to a specific plant area or production line.
+    - **Format** — Choose **PDF** for a formatted, shareable document or **CSV** for raw tabular data you can analyze further in Excel.
+  </Step>
+  <Step title="Preview the report">
+    Click **Preview** to see a rendered version of the report with your selected filters applied. Verify that the data scope and date range look correct before exporting. If something is off, adjust your filters and preview again.
+  </Step>
+  <Step title="Export the report">
+    Click **Export as PDF** or **Export as CSV** depending on your chosen format. The file downloads to your browser immediately. PDF reports include your company logo and plant name in the header and are formatted for printing or email attachment.
+  </Step>
+</Steps>
+
+## Scheduled reports
+
+Instead of generating reports manually, you can schedule TRACTIAN to build and deliver them automatically on a recurring basis.
+
+To set up a scheduled report:
+
+1. After configuring your filters (Steps 1–3 above), click **Schedule** instead of Export.
+2. Choose a delivery frequency: **Daily**, **Weekly** (select day of week), or **Monthly** (select day of month).
+3. Enter one or more recipient email addresses. You can add anyone — they do not need a TRACTIAN account to receive the report.
+4. Click **Save Schedule**.
+
+TRACTIAN generates the report at midnight local time on each scheduled date and sends it as an email attachment. The email subject line includes the report type, plant name, and date range covered. You can view, edit, or delete all active schedules from the **Reports → Scheduled** tab.
+
+<Info>
+  You can have multiple schedules for the same report type with different filters — for example, a weekly Work Order Summary for each plant area sent to the respective area supervisor.
+</Info>
+
+<Tip>
+  Use the **Maintenance Compliance Report** on a monthly schedule as your primary documentation artifact for audits and ISO maintenance certifications. It provides a timestamped record of planned vs. completed PM tasks that satisfies most regulatory and certification requirements without any manual data compilation.
+</Tip>

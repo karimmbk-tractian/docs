@@ -1,0 +1,364 @@
+---
+title: "Assets API: Manage Your Industrial Asset Hierarchy"
+sidebarTitle: "Assets"
+description: "REST API endpoints for creating, reading, and updating assets in your TRACTIAN hierarchy — plants, areas, machines, and components."
+---
+
+The Assets API gives you full programmatic control over your industrial asset hierarchy. Use it to sync assets from your ERP or CMMS, read real-time health data, build custom integrations, and keep your TRACTIAN asset tree in step with your operational records. Every sensor reading, AI insight, and work order in TRACTIAN is anchored to an asset, so a clean hierarchy is the foundation for everything else on the platform.
+
+## Authentication
+
+All requests require an `Authorization` header with your API key and an `x-company-id` header to scope requests to the correct company.
+
+```bash
+Authorization: Bearer {api_key}
+x-company-id: {companyId}
+```
+
+---
+
+## Asset hierarchy
+
+Assets in TRACTIAN follow a strict parent-child tree: **Plant → Area → Machine → Component**. When you create or update an asset, you associate it with a `plantId` and optionally an `areaId`. Child assets inherit the health rollup of their parents — a critical component surfaces as a signal up through the machine and area to the plant level.
+
+<Note>
+  Deleting a parent asset (e.g., an area) will cascade a soft delete to all child assets beneath it. Use the `DELETE` endpoint with care in production environments.
+</Note>
+
+---
+
+## List assets
+
+<CodeGroup>
+```bash cURL
+curl -G https://api.tractian.com/v1/assets \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d page=1 \
+  -d limit=25 \
+  -d healthLevel=critical
+```
+</CodeGroup>
+
+`GET /v1/assets`
+
+Returns a paginated list of assets scoped to your company. Filter by plant, area, or health level to narrow results.
+
+### Query parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number for paginated results.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="25">
+  Number of assets to return per page. Maximum is 100.
+</ParamField>
+
+<ParamField query="plantId" type="string">
+  Filter assets belonging to a specific plant.
+</ParamField>
+
+<ParamField query="areaId" type="string">
+  Filter assets belonging to a specific area.
+</ParamField>
+
+<ParamField query="healthLevel" type="string">
+  Filter by current health level. One of `healthy`, `attention`, `alert`, or `critical`.
+</ParamField>
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "asset-abc123",
+      "name": "Pump Motor #3",
+      "category": "motor",
+      "manufacturer": "WEG",
+      "model": "W22 100L",
+      "serialNumber": "SN-20240815-003",
+      "healthLevel": "critical",
+      "criticality": "high",
+      "plantId": "plant-001",
+      "areaId": "area-007",
+      "sensorIds": ["sensor-x1", "sensor-x2"],
+      "createdAt": "2024-03-10T08:00:00Z",
+      "updatedAt": "2025-01-15T10:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 25,
+    "total": 142,
+    "totalPages": 6
+  }
+}
+```
+
+<ResponseField name="data" type="array">
+  Array of asset objects.
+
+  <Expandable title="Asset object fields">
+    <ResponseField name="id" type="string">
+      Unique identifier for the asset.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Human-readable asset name.
+    </ResponseField>
+    <ResponseField name="category" type="string">
+      Asset category (e.g., `motor`, `pump`, `compressor`, `conveyor`).
+    </ResponseField>
+    <ResponseField name="manufacturer" type="string">
+      Equipment manufacturer name.
+    </ResponseField>
+    <ResponseField name="model" type="string">
+      Manufacturer model identifier.
+    </ResponseField>
+    <ResponseField name="serialNumber" type="string">
+      Serial number as recorded on the asset nameplate.
+    </ResponseField>
+    <ResponseField name="healthLevel" type="string">
+      Current AI-assessed health level: `healthy`, `attention`, `alert`, or `critical`.
+    </ResponseField>
+    <ResponseField name="criticality" type="string">
+      Operational criticality assigned to this asset: `low`, `medium`, `high`, or `critical`.
+    </ResponseField>
+    <ResponseField name="plantId" type="string">
+      ID of the plant this asset belongs to.
+    </ResponseField>
+    <ResponseField name="areaId" type="string">
+      ID of the area within the plant. Null if the asset is assigned directly to a plant.
+    </ResponseField>
+    <ResponseField name="sensorIds" type="array">
+      List of sensor IDs attached to this asset.
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of when the asset was created.
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of the last update.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination metadata.
+
+  <Expandable title="Pagination fields">
+    <ResponseField name="page" type="integer">
+      Current page number.
+    </ResponseField>
+    <ResponseField name="limit" type="integer">
+      Results per page.
+    </ResponseField>
+    <ResponseField name="total" type="integer">
+      Total number of matching assets.
+    </ResponseField>
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Get an asset
+
+`GET /v1/assets/:assetId`
+
+Returns a single asset by ID with all fields populated.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/assets/asset-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="assetId" type="string" required>
+  The unique ID of the asset to retrieve.
+</ParamField>
+
+### Response
+
+```json
+{
+  "id": "asset-abc123",
+  "name": "Pump Motor #3",
+  "category": "motor",
+  "manufacturer": "WEG",
+  "model": "W22 100L",
+  "serialNumber": "SN-20240815-003",
+  "healthLevel": "critical",
+  "criticality": "high",
+  "plantId": "plant-001",
+  "areaId": "area-007",
+  "sensorIds": ["sensor-x1", "sensor-x2"],
+  "createdAt": "2024-03-10T08:00:00Z",
+  "updatedAt": "2025-01-15T10:30:00Z"
+}
+```
+
+---
+
+## Create an asset
+
+`POST /v1/assets`
+
+Creates a new asset in your TRACTIAN hierarchy. You must associate every asset with a plant using `plantId`.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/assets \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "name": "Compressor Unit B",
+    "category": "compressor",
+    "plantId": "plant-001",
+    "areaId": "area-003",
+    "manufacturer": "Atlas Copco",
+    "model": "GA 30",
+    "serialNumber": "SN-2024-00441",
+    "criticality": "high"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="name" type="string" required>
+  Display name for the asset.
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  Asset category (e.g., `motor`, `pump`, `compressor`, `conveyor`, `fan`).
+</ParamField>
+
+<ParamField body="plantId" type="string" required>
+  ID of the plant this asset belongs to.
+</ParamField>
+
+<ParamField body="areaId" type="string">
+  ID of the area within the plant. Omit to attach the asset directly to the plant.
+</ParamField>
+
+<ParamField body="manufacturer" type="string">
+  Equipment manufacturer name.
+</ParamField>
+
+<ParamField body="model" type="string">
+  Manufacturer model designation.
+</ParamField>
+
+<ParamField body="serialNumber" type="string">
+  Asset serial number.
+</ParamField>
+
+<ParamField body="criticality" type="string">
+  Operational criticality: `low`, `medium`, `high`, or `critical`.
+</ParamField>
+
+### Response
+
+Returns the newly created asset object with a `201 Created` status.
+
+---
+
+## Update an asset
+
+`PUT /v1/assets/:assetId`
+
+Updates an existing asset. All fields are optional — only the fields you include are changed.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://api.tractian.com/v1/assets/asset-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "criticality": "critical",
+    "model": "W22 132M"
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="assetId" type="string" required>
+  The unique ID of the asset to update.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="name" type="string">
+  New display name for the asset.
+</ParamField>
+
+<ParamField body="category" type="string">
+  Updated asset category.
+</ParamField>
+
+<ParamField body="plantId" type="string">
+  Reassign the asset to a different plant.
+</ParamField>
+
+<ParamField body="areaId" type="string">
+  Reassign the asset to a different area. Set to `null` to move the asset to the plant root.
+</ParamField>
+
+<ParamField body="manufacturer" type="string">
+  Updated manufacturer name.
+</ParamField>
+
+<ParamField body="model" type="string">
+  Updated model designation.
+</ParamField>
+
+<ParamField body="serialNumber" type="string">
+  Updated serial number.
+</ParamField>
+
+<ParamField body="criticality" type="string">
+  Updated criticality level: `low`, `medium`, `high`, or `critical`.
+</ParamField>
+
+### Response
+
+Returns the updated asset object with a `200 OK` status.
+
+---
+
+## Delete an asset
+
+`DELETE /v1/assets/:assetId`
+
+Soft-deletes an asset. The asset is removed from all active views and hierarchy trees but remains in the database for historical reporting purposes. Associated sensor data, insights, and work orders are preserved and continue to reference the asset ID.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://api.tractian.com/v1/assets/asset-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="assetId" type="string" required>
+  The unique ID of the asset to delete.
+</ParamField>
+
+### Response
+
+Returns `204 No Content` on success.
+
+<Warning>
+  Deleting a machine or area asset cascades the soft delete to all child assets beneath it in the hierarchy. This action cannot be undone through the API — contact TRACTIAN support to restore soft-deleted assets.
+</Warning>

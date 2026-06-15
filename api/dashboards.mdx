@@ -1,0 +1,530 @@
+---
+title: "Dashboards API: Manage Executive Dashboard Collections"
+sidebarTitle: "Dashboards"
+description: "REST API for reading and managing the TRACTIAN Executive Mode dashboard tree — create collections, add dashboard nodes, manage favorites, and load tree data."
+---
+
+The Dashboards API gives you programmatic control over the TRACTIAN Executive Mode dashboard tree. Use it to build custom executive views for your operations leadership, embed the dashboard hierarchy in your own portals, or automate the creation of standard dashboard layouts across plants. The tree is organized as a hierarchy of collections and dashboard nodes, and every user can maintain their own favorites list for quick access to frequently used views.
+
+## Authentication
+
+All requests require an `Authorization` header with your API key and an `x-company-id` header.
+
+```bash
+Authorization: Bearer {api_key}
+x-company-id: {companyId}
+```
+
+---
+
+## Dashboard tree structure
+
+The dashboard tree is a nested hierarchy rooted at your organization. Collections act as folders that group related dashboard nodes. Dashboard nodes are the leaf items that render a specific visualization type.
+
+```
+Organization
+└── Company A
+    ├── Production Line Dashboards (collection)
+    │   ├── Motor Hall Display (display)
+    │   └── Assembly Floor Map (map)
+    └── Reliability Dashboards (collection)
+        └── Asset Health Card (card)
+```
+
+**Node types:**
+
+| Type | Description |
+|---|---|
+| `company` | Root node representing a company. |
+| `organization` | Root node representing an organization spanning multiple companies. |
+| `dashboard_collection` | A folder that groups other collections or dashboard nodes. |
+| `display` | A full-screen display dashboard, typically shown on shop floor monitors. |
+| `map` | A geographic or plant-layout map view. |
+| `card` | A KPI card dashboard summarizing key metrics for an asset or area. |
+
+---
+
+## Load dashboard tree
+
+`POST /v1/dashboards/tree`
+
+Returns the full nested dashboard tree for one or more companies, including each node's metadata and the current user's favorites. Use a `POST` body rather than query parameters because company ID lists can be arbitrarily long.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/dashboards/tree \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "companyIds": ["company-001", "company-002"]
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="companyIds" type="array" required>
+  Array of company IDs whose dashboard trees you want to load. You must have access to each company in the list.
+</ParamField>
+
+### Response
+
+```json
+{
+  "tree": [
+    {
+      "id": "company-001",
+      "parentId": null,
+      "type": "company",
+      "name": "Acme Manufacturing",
+      "children": [
+        {
+          "id": "collection-111",
+          "parentId": "company-001",
+          "type": "dashboard_collection",
+          "name": "Production Line Dashboards",
+          "position": 1,
+          "isFavorite": false,
+          "children": [
+            {
+              "id": "node-abc123",
+              "parentId": "collection-111",
+              "type": "display",
+              "name": "Motor Hall View",
+              "position": 1,
+              "isFavorite": true,
+              "thumbnailUrl": "https://cdn.tractian.com/thumbnails/display-abc.png",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+<ResponseField name="tree" type="array">
+  Array of company root nodes, each containing the full nested child hierarchy.
+
+  <Expandable title="Node fields">
+    <ResponseField name="id" type="string">
+      Unique identifier for the node.
+    </ResponseField>
+    <ResponseField name="parentId" type="string">
+      ID of the parent node. Null for company-level root nodes.
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      Node type: `company`, `organization`, `dashboard_collection`, `display`, `map`, or `card`.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Display name of the node.
+    </ResponseField>
+    <ResponseField name="position" type="integer">
+      Sort order among siblings with the same parent.
+    </ResponseField>
+    <ResponseField name="isFavorite" type="boolean">
+      Whether the currently authenticated user has marked this node as a favorite.
+    </ResponseField>
+    <ResponseField name="thumbnailUrl" type="string">
+      URL to a thumbnail preview image for display and card nodes. Null for collections.
+    </ResponseField>
+    <ResponseField name="children" type="array">
+      Nested child nodes. Empty array for leaf nodes.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Create a collection
+
+`POST /v1/dashboards/collections`
+
+Creates a new collection (folder) in the dashboard tree. Collections can be nested inside a company root or inside another collection.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/dashboards/collections \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "name": "Production KPIs",
+    "parentId": "company-001"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="name" type="string" required>
+  Display name for the collection.
+</ParamField>
+
+<ParamField body="parentId" type="string" required>
+  ID of the parent node. Use your company ID to create a top-level collection, or use another collection ID to nest it.
+</ParamField>
+
+### Response
+
+Returns the created collection node object with a `201 Created` status.
+
+---
+
+## Add a dashboard node
+
+`POST /v1/dashboards`
+
+Adds a new dashboard node (display, map, or card) to an existing collection.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/dashboards \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "type": "display",
+    "name": "Motor Hall View",
+    "parentId": "collection-111"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="type" type="string" required>
+  Dashboard node type: `display`, `map`, or `card`.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Display name for the dashboard node.
+</ParamField>
+
+<ParamField body="parentId" type="string" required>
+  ID of the collection this dashboard node belongs to.
+</ParamField>
+
+### Response
+
+Returns the created node object with a `201 Created` status. See the [complete node response](#complete-node-response) example below.
+
+---
+
+## Update a node
+
+`PUT /v1/dashboards/:nodeId`
+
+Updates the properties of an existing node. Currently supports renaming the node.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://api.tractian.com/v1/dashboards/node-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "name": "Motor Hall View (Updated)"
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="nodeId" type="string" required>
+  The unique ID of the node to update.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="name" type="string">
+  New display name for the node.
+</ParamField>
+
+### Response
+
+Returns the updated node object with a `200 OK` status.
+
+---
+
+## Delete a node
+
+`DELETE /v1/dashboards/:nodeId`
+
+Deletes a node and all of its descendants. For collections, this removes the collection and every dashboard node nested within it.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://api.tractian.com/v1/dashboards/node-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="nodeId" type="string" required>
+  The unique ID of the node to delete.
+</ParamField>
+
+### Response
+
+Returns `204 No Content` on success.
+
+<Warning>
+  Deleting a collection permanently removes all descendant nodes. This action cannot be undone. Verify the subtree before deleting a collection that may contain many dashboard nodes.
+</Warning>
+
+---
+
+## Move a node
+
+`POST /v1/dashboards/:nodeId/move`
+
+Moves a node — and all of its descendants — to a new parent. Use this to reorganize collections or relocate dashboard nodes between collections.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/dashboards/node-abc123/move \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "newParentId": "collection-456"
+  }'
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="nodeId" type="string" required>
+  The unique ID of the node to move.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="newParentId" type="string" required>
+  ID of the destination parent node. Must be a collection or company root node.
+</ParamField>
+
+### Response
+
+Returns the moved node object with its updated `parentId`.
+
+---
+
+## List favorites
+
+`GET /v1/dashboards/favorites`
+
+Returns all dashboard nodes that the currently authenticated user has marked as favorites.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/dashboards/favorites \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "favorites": [
+    {
+      "id": "node-abc123",
+      "parentId": "collection-111",
+      "type": "display",
+      "name": "Motor Hall View",
+      "thumbnailUrl": "https://cdn.tractian.com/thumbnails/display-abc.png"
+    }
+  ]
+}
+```
+
+<ResponseField name="favorites" type="array">
+  Array of node summary objects that the user has favorited.
+</ResponseField>
+
+---
+
+## Add to favorites
+
+`POST /v1/dashboards/favorites`
+
+Marks a dashboard node as a favorite for the currently authenticated user.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.tractian.com/v1/dashboards/favorites \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "nodeId": "node-abc123"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="nodeId" type="string" required>
+  The ID of the dashboard node to add to favorites.
+</ParamField>
+
+### Response
+
+Returns `200 OK` on success.
+
+---
+
+## Remove from favorites
+
+`DELETE /v1/dashboards/favorites`
+
+Removes a dashboard node from the current user's favorites list.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://api.tractian.com/v1/dashboards/favorites \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-company-id: YOUR_COMPANY_ID" \
+  -d '{
+    "nodeId": "node-abc123"
+  }'
+```
+</CodeGroup>
+
+### Body parameters
+
+<ParamField body="nodeId" type="string" required>
+  The ID of the dashboard node to remove from favorites.
+</ParamField>
+
+### Response
+
+Returns `200 OK` on success.
+
+---
+
+## Get a single node
+
+`GET /v1/nodes/:nodeId`
+
+Returns a single dashboard node by its ID, including all metadata fields. Use this to inspect a specific node without loading the full tree.
+
+<CodeGroup>
+```bash cURL
+curl https://api.tractian.com/v1/nodes/node-abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "x-company-id: YOUR_COMPANY_ID"
+```
+</CodeGroup>
+
+### Path parameters
+
+<ParamField path="nodeId" type="string" required>
+  The unique ID of the node to retrieve.
+</ParamField>
+
+### Response
+
+Returns the full node object. See the [complete node response](#complete-node-response) for the full field list.
+
+```json
+{
+  "id": "node-abc123",
+  "parentId": "collection-456",
+  "type": "display",
+  "name": "Motor Hall View",
+  "treeId": 42,
+  "children": [],
+  "path": "company-001/collection-456/node-abc123",
+  "position": 1,
+  "createdAt": "2025-01-15T10:30:00Z",
+  "createdBy": "user-789",
+  "thumbnailUrl": "https://cdn.tractian.com/thumbnails/display-abc.png",
+  "demoId": null,
+  "isFavorite": false
+}
+```
+
+---
+
+## Complete node response
+
+The following is a full node object as returned by the create, update, and move endpoints.
+
+```json
+{
+  "id": "node-abc123",
+  "parentId": "collection-456",
+  "type": "display",
+  "name": "Motor Hall View",
+  "treeId": 42,
+  "children": [],
+  "path": "company-001/collection-456/node-abc123",
+  "position": 1,
+  "createdAt": "2025-01-15T10:30:00Z",
+  "createdBy": "user-789",
+  "thumbnailUrl": "https://cdn.tractian.com/thumbnails/display-abc.png",
+  "demoId": null,
+  "isFavorite": true
+}
+```
+
+<ResponseField name="id" type="string">
+  Unique identifier for the node (UUID).
+</ResponseField>
+
+<ResponseField name="parentId" type="string">
+  ID of the parent collection or company root.
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Node type: `company`, `organization`, `dashboard_collection`, `display`, `map`, or `card`.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Display name of the node.
+</ResponseField>
+
+<ResponseField name="treeId" type="integer">
+  Numeric tree identifier used for ordering and position tracking.
+</ResponseField>
+
+<ResponseField name="children" type="array">
+  Array of child node IDs. Empty for leaf nodes; populated for collections when loaded via the tree endpoint.
+</ResponseField>
+
+<ResponseField name="path" type="string">
+  Materialized path representing the full ancestry of this node from the tree root, as a slash-separated string of node IDs.
+</ResponseField>
+
+<ResponseField name="position" type="integer">
+  Sort order of this node among its siblings.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO 8601 timestamp of node creation.
+</ResponseField>
+
+<ResponseField name="createdBy" type="string">
+  User ID of the person who created this node.
+</ResponseField>
+
+<ResponseField name="thumbnailUrl" type="string">
+  URL to a thumbnail preview image. Populated for `display`, `map`, and `card` nodes after the first render. Null for collections.
+</ResponseField>
+
+<ResponseField name="demoId" type="string">
+  If present, associates this node with a demo dashboard. Null for regular nodes.
+</ResponseField>
+
+<ResponseField name="isFavorite" type="boolean">
+  Whether the currently authenticated user has favorited this node.
+</ResponseField>

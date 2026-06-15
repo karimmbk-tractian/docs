@@ -1,0 +1,136 @@
+---
+title: "Configure Machine Health Alerts and Notifications"
+sidebarTitle: "Alerts & Notifications"
+description: "Set up TRACTIAN alert thresholds and notification preferences to get notified by push, email, SMS, or WhatsApp when machine health changes."
+---
+
+TRACTIAN's alerting system ensures the right people are notified the moment a machine shows signs of trouble — whether the AI detects a fault signature automatically or a sensor reading crosses a threshold you've defined. Notifications can be delivered by push notification, email, SMS, WhatsApp, or voice call, and they respect the work shift schedules you configure for your team. This page explains how alerts are generated and how to configure them so your team gets the signal without the noise.
+
+---
+
+## Alert types
+
+TRACTIAN generates alerts through three distinct mechanisms, each designed for a different monitoring scenario.
+
+<CardGroup cols={1}>
+  <Card title="Insight alerts" icon="brain" href="/monitoring/insights-and-diagnosis">
+    Generated automatically by the **Auto Diagnosis™** AI engine when a fault pattern is detected in vibration, temperature, or RPM data. Insight alerts include the fault type, affected component, and recommended actions. No manual threshold configuration is required — the AI determines when an anomaly is significant enough to warrant your attention.
+  </Card>
+  <Card title="Threshold alerts" icon="sliders" href="/assets/asset-health">
+    Triggered when a sensor reading crosses a manually defined limit. You can set thresholds on any continuous measurement, including overall vibration velocity (RMS), acceleration, and temperature. Threshold alerts are useful for compliance monitoring, warranty conditions, or machines where you have a known operating limit that must not be exceeded.
+
+    To configure a threshold, go to **Asset Settings > Monitoring > Thresholds** and enter your upper (and optionally lower) limits for each measurement type.
+  </Card>
+  <Card title="Criticality-based alerts" icon="gauge-high" href="/assets/asset-health">
+    For assets designated as **Critical** in your asset configuration, the AI engine applies a lower anomaly threshold — meaning it will generate an insight earlier in the fault progression compared to a non-critical asset. This gives you more lead time to act on faults that could cause significant production or safety impact.
+
+    Adjust asset criticality classifications under **Assets > [Asset Name] > Settings > Criticality**.
+  </Card>
+</CardGroup>
+
+---
+
+## Configuring notification channels
+
+<Steps>
+  <Step title="Go to Settings > Notifications">
+    From the main menu, click your profile icon in the top-right corner and select **Settings**. Then click **Notifications** in the left sidebar.
+  </Step>
+
+  <Step title="Select your preferred notification channels">
+    Enable any combination of the available channels:
+
+    - **Push notification** — delivered to the TRACTIAN mobile app on your phone
+    - **Email** — sent to your registered account email address
+    - **SMS** — sent to your registered mobile number
+    - **WhatsApp** — delivered to your registered WhatsApp number
+    - **Voice call** — an automated call for critical alerts (where available on your plan)
+
+    You can enable multiple channels simultaneously. For example, many teams use push notifications for all alerts and add SMS or voice call as a backup for Critical-level alerts only.
+  </Step>
+
+  <Step title="Set your work shift hours">
+    Under **Notification Schedule**, define your working hours for each day of the week. TRACTIAN uses this schedule to manage when non-urgent notifications are delivered. Alerts generated outside your shift window are held and delivered at the start of your next shift.
+
+    <Note>
+      **Critical alerts are always delivered immediately**, regardless of work shift settings. If a fault poses an imminent risk, you'll be notified right away — not at the start of your next shift.
+    </Note>
+  </Step>
+
+  <Step title="Enable or disable alert categories per channel">
+    For each notification channel, you can choose which alert categories it receives:
+
+    | Category | Description |
+    |---|---|
+    | **Critical insights** | AI-detected faults at Critical criticality |
+    | **High insights** | AI-detected faults at High criticality |
+    | **Medium insights** | AI-detected faults at Medium criticality |
+    | **Low insights** | AI-detected faults at Low criticality |
+    | **Threshold breaches** | Manual threshold alerts |
+    | **Sensor health** | Connectivity loss, low battery, or offline sensors |
+
+    A common configuration is to route Critical and High insights to push + SMS, Medium and Low insights to push + email only, and threshold alerts to email only.
+  </Step>
+</Steps>
+
+---
+
+## Alert channels
+
+| Channel | Delivery method | Best for |
+|---|---|---|
+| **Push notification** | TRACTIAN mobile app | Immediate on-call awareness; ideal for technicians on the plant floor |
+| **Email** | Standard email to registered address | Detailed alert history; easy to log and share with the broader team |
+| **SMS** | Text message to registered mobile number | Backup for critical alerts when push isn't reliable; no app required |
+| **WhatsApp** | WhatsApp message to registered number | Teams that already use WhatsApp for operational communication |
+| **Voice call** | Automated phone call | Highest-urgency critical alerts when all other channels must be confirmed |
+
+<Info>
+  Voice call notifications are available on select TRACTIAN subscription plans. Contact your Customer Success Manager to enable this channel for your account.
+</Info>
+
+---
+
+## Team notifications
+
+You can add other members of your organization as notification recipients for specific assets or entire asset groups. This is useful for:
+
+- Ensuring a backup contact receives alerts when the primary responsible technician is off shift
+- Routing alerts for a specific production line to the dedicated maintenance crew for that area
+- Giving plant managers visibility into Critical alerts across all asset groups without notification fatigue from lower-criticality events
+
+**To add a team member as a notification receiver:**
+
+1. Navigate to **Assets > [Asset Name] > Settings > Notifications**
+2. Click **Add Receiver**
+3. Search for the team member by name or email — they must already have a TRACTIAN account
+4. Select which alert categories they should receive for this asset
+5. Save
+
+To manage notifications at the asset group level, navigate to **Assets > [Asset Group] > Settings > Notifications** and repeat the same process. Individual asset overrides take precedence over group-level settings.
+
+<Tip>
+  Use asset group notifications as your default configuration and only create individual asset overrides for machines that require special attention — such as single-point-of-failure assets or machines currently under investigation for a fault.
+</Tip>
+
+---
+
+## Work shift configuration
+
+TRACTIAN's work shift feature prevents notification fatigue by batching non-urgent alerts that occur during your off-hours and delivering them when your shift begins. Here's how the system behaves across different scenarios:
+
+| Scenario | Behavior |
+|---|---|
+| **Alert during shift hours** | Delivered immediately on all configured channels |
+| **Low/Medium alert outside shift hours** | Held and delivered at the start of your next shift |
+| **High alert outside shift hours** | Delivered immediately on configured channels |
+| **Critical alert outside shift hours** | Always delivered immediately, regardless of shift schedule |
+| **Sensor goes offline outside shift hours** | Delivered at start of next shift (unless classified as Critical asset) |
+
+Work shift schedules are set per user, meaning each team member can configure their own hours independently. If your plant runs 24/7 shifts, each shift's team can configure their schedules so alerts follow the operator on duty at any given time.
+
+To update your shift schedule, go to **Settings > Notifications > Notification Schedule** and define your working hours for each day. Changes take effect immediately.
+
+<Note>
+  Critical alerts bypass all work shift rules and are sent immediately, 24/7, on every channel you've enabled. Make sure your Critical alert channels (especially SMS and voice call) are configured correctly so you never miss a time-sensitive fault.
+</Note>

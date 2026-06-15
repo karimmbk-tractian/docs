@@ -1,0 +1,104 @@
+---
+title: "TRACTIAN Platform Overview: Modules and Capabilities"
+sidebarTitle: "Platform Overview"
+description: "Explore every TRACTIAN module — Condition Monitoring, CMMS, OEE, Mobile, and Integrations — and learn how sensor data flows into maintenance action."
+---
+
+TRACTIAN is an end-to-end industrial maintenance platform that closes the loop between raw sensor data and measurable operational outcomes. A SmartTrac sensor detects an anomaly, the AI engine diagnoses the fault, a work order is created and executed, and the result feeds back into your analytics — all within a single connected system. No data silos, no manual handoffs between tools. This page explains each module, how they are designed to work together, and the hardware and connectivity options that underpin the platform.
+
+## The TRACTIAN platform
+
+<CardGroup cols={3}>
+  <Card title="Condition Monitoring" icon="wave-pulse" href="/monitoring/sensors-setup">
+    Stream vibration, temperature, and RPM data from SmartTrac sensors in real time. The AI engine continuously analyzes signals against 35+ failure-mode models — bearing wear, misalignment, cavitation, imbalance, looseness, and more — and ranks detected anomalies by severity. Reliability engineers can drill into the spectral analysis workspace to review raw FFT spectra, waterfall plots, and trend charts alongside the AI's evidence trail.
+  </Card>
+  <Card title="Asset Management" icon="sitemap" href="/assets/asset-tree">
+    Organize every piece of equipment in a Plant → Area → Machine hierarchy with custom attributes, criticality ratings, and attached documentation. Each asset carries a live health score derived from sensor data and maintenance history. Build FMEA (Failure Mode and Effects Analysis) libraries and run RCA (Root Cause Analysis) investigations directly within the asset record to capture institutional knowledge and refine alert thresholds over time.
+  </Card>
+  <Card title="CMMS" icon="wrench" href="/cmms/work-orders">
+    Manage the full maintenance workflow: create, assign, and close work orders; schedule preventive maintenance plans on calendar or meter-based triggers; and define lubrication routes with step-by-step instructions for technicians. Every action is time-stamped and linked to the originating asset, giving you a complete maintenance history without separate spreadsheets or paper logs.
+  </Card>
+  <Card title="Dashboards & Reports" icon="chart-line" href="/dashboards/executive-mode">
+    Track Overall Equipment Effectiveness (OEE) — availability, performance, and quality — at the machine, line, plant, or enterprise level. Executive Mode aggregates KPIs across multiple companies and facilities into a single view designed for leadership reviews. Schedule automated reports to be delivered to stakeholders by email on any cadence you choose.
+  </Card>
+  <Card title="Mobile App" icon="mobile" href="/mobile/overview">
+    The native iOS and Android apps give technicians full access to their work order queue, asset records, and sensor readings from anywhere on the plant floor. Offline mode queues all actions — work order updates, inspection checkpoints, asset edits — locally and syncs automatically when connectivity is restored. Technicians can also pair new sensors, photograph assets, and scan QR codes to pull up machine records instantly.
+  </Card>
+  <Card title="Integrations" icon="plug" href="/integrations/overview">
+    Connect TRACTIAN to your existing ERP or CMMS — SAP, Oracle, IBM Maximo, and others — via the TRACTIAN REST API or pre-built connectors. Sync work orders, asset records, and inventory data bidirectionally so TRACTIAN complements rather than replaces your existing toolchain. Webhooks let you push real-time fault alerts into Slack, Microsoft Teams, or any custom endpoint.
+  </Card>
+</CardGroup>
+
+## How it all connects
+
+Every value TRACTIAN delivers flows through a single, continuous loop that starts with a sensor and ends with a measurable outcome recorded in your analytics.
+
+<Steps>
+  <Step title="Sensor data collection">
+    A SmartTrac sensor mounted on your machine captures vibration waveforms, temperature readings, and rotational speed continuously. Data transmits over 4G/LTE through a TRACTIAN Gateway to the cloud processing pipeline in near real time.
+  </Step>
+  <Step title="AI fault detection">
+    The AI engine analyzes incoming signals against failure-mode models trained on millions of industrial machine readings. When it detects a pattern consistent with a known fault, it generates an **Insight** — a structured diagnosis that includes the failure mode, severity level, confidence score, and recommended corrective action.
+  </Step>
+  <Step title="Work order creation">
+    From any Insight, you or the system can automatically generate a **Work Order** in the CMMS. The work order is pre-populated with the asset, fault description, and recommended task. It is assigned to a technician, prioritized based on asset criticality and fault severity, and queued in their mobile app.
+  </Step>
+  <Step title="Maintenance execution">
+    The assigned technician receives a multi-channel notification (push, email, SMS, WhatsApp, or voice), opens the work order on their mobile device, follows the step-by-step instructions, and marks the job complete — even offline. Any parts used, time logged, or observations noted are captured in the record.
+  </Step>
+  <Step title="Analytics and continuous improvement">
+    Completed work orders feed back into your OEE dashboards, MTTR/MTBF calculations, and asset health scores. Over time, the platform surfaces patterns — recurring faults, high-cost assets, underperforming areas — so your reliability program becomes progressively more targeted and efficient.
+  </Step>
+</Steps>
+
+<Info>
+  The faster your team closes the loop from Insight to completed Work Order, the richer TRACTIAN's feedback data becomes. Closed work orders with root-cause notes and parts records directly improve the precision of future AI diagnoses for your specific machines.
+</Info>
+
+## Hardware: SmartTrac sensors
+
+SmartTrac is TRACTIAN's purpose-built industrial IoT sensor, designed to survive demanding manufacturing environments and deliver high-fidelity data without requiring wired infrastructure.
+
+<CardGroup cols={2}>
+  <Card title="Measurement capabilities" icon="gauge-high" href="/monitoring/sensors-setup">
+    - **Vibration:** up to 64 kHz sampling rate, capturing high-frequency fault signatures that lower-resolution sensors miss
+    - **Temperature:** continuous surface temperature monitoring with configurable alert thresholds
+    - **RPM:** real-time rotational speed tracking for accurate frequency-domain analysis
+  </Card>
+  <Card title="Industrial ratings & connectivity" icon="shield-check" href="/monitoring/sensors-setup">
+    - **IP69K** — sealed against high-pressure washdowns and dust ingress
+    - **Class 1 Division 1** — certified for use in hazardous, potentially explosive atmospheres
+    - **4G/LTE** connectivity through TRACTIAN Gateway, with local data buffering during network outages
+    - **3–5 year battery life** under standard measurement intervals, with no wiring required
+  </Card>
+</CardGroup>
+
+<Tip>
+  SmartTrac sensors buffer data locally if the Gateway loses connectivity. No readings are lost during temporary network interruptions — the buffer syncs automatically when the connection is restored.
+</Tip>
+
+<Accordion title="Mounting options">
+  SmartTrac supports three mounting configurations to suit different machine types and installation permanence requirements:
+
+  - **Magnetic base** — Quick-attach for temporary surveys or machines with ferrous housings. Ideal for route-based data collection and pilot deployments.
+  - **Adhesive pad** — Permanent installation on non-ferrous surfaces. Rated for continuous use in environments with moderate vibration.
+  - **Threaded stud (M8)** — Bolted installation for high-vibration or high-temperature applications where adhesive or magnetic mounts are insufficient. Provides the most rigid coupling and highest signal fidelity.
+
+  Consult the SmartTrac Installation Guide or your Customer Success engineer for placement recommendations specific to your machine type (motors, pumps, fans, gearboxes, compressors, etc.).
+</Accordion>
+
+## Supported channels
+
+Access TRACTIAN from the interface that fits your workflow. All channels share the same underlying data in real time.
+
+| Channel | Access point | Best for |
+|---|---|---|
+| **Web app** | [app.tractian.com](https://app.tractian.com) | Full platform configuration, dashboards, spectral analysis, reporting |
+| **iOS app** | Available on the App Store | Field technicians, sensor pairing, offline work order execution |
+| **Android app** | Available on Google Play | Field technicians, sensor pairing, offline work order execution |
+| **REST API** | `api.tractian.com` | ERP/CMMS integrations, custom dashboards, automated workflows |
+| **Webhooks** | Configurable in Settings | Real-time fault alerts to Slack, Teams, or custom endpoints |
+
+<Note>
+  API documentation and authentication guides are available in the **Integrations** section of this documentation. Contact your account manager to request API credentials.
+</Note>

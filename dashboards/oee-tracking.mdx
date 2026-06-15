@@ -1,0 +1,81 @@
+---
+title: "Track OEE and Production Performance with TRACTIAN"
+sidebarTitle: "OEE Tracking"
+description: Monitor Overall Equipment Effectiveness (OEE) — availability, performance, and quality — for every machine and production line in your plant.
+---
+
+Overall Equipment Effectiveness (OEE) is the manufacturing industry's standard measure of how productively a machine or line is actually running compared to its full potential. A single percentage number captures three dimensions of loss — unplanned downtime, slow cycles, and defective output — making it the most actionable KPI on a plant floor. TRACTIAN's OEE tracking pulls runtime data directly from your SmartTrac sensors and production counters, calculates OEE automatically, and surfaces the results in dashboards you can drill into at the plant, area, or individual machine level.
+
+## OEE formula
+
+OEE is the product of three independent ratios, each one between 0% and 100%:
+
+**OEE = Availability × Performance × Quality**
+
+| Component | What it measures | Example loss |
+|---|---|---|
+| **Availability** | Percentage of planned production time the machine was actually running | Unplanned breakdowns, changeover overruns |
+| **Performance** | Percentage of theoretical maximum throughput achieved while running | Reduced speed, minor stops, jams |
+| **Quality** | Percentage of output that met quality standards on the first pass | Defective parts, startup scrap |
+
+If a machine runs 90% of planned time, at 95% of rated speed, and produces 98% good parts, its OEE is **0.90 × 0.95 × 0.98 = 83.8%**.
+
+## Setting up OEE tracking
+
+<Steps>
+  <Step title="Install SmartTrac sensors on production machines">
+    OEE tracking requires runtime data — the sensor must be able to detect when the machine is running versus stopped. Install TRACTIAN SmartTrac sensors on each machine you want to track. Vibration or current sensors on the main drive motor provide reliable runtime detection. Contact your TRACTIAN installation team if sensors are not yet in place.
+  </Step>
+  <Step title="Configure production targets for each asset">
+    Navigate to **Assets**, open the asset detail page, and click **Settings → Production Targets**. Enter the machine's ideal cycle time (or units per hour) and the planned shift hours per day. These targets define the "full potential" baseline that Availability and Performance are measured against.
+  </Step>
+  <Step title="Enable OEE tracking">
+    Still in the asset settings, go to **Settings → OEE** and toggle **Enable OEE Tracking** on. TRACTIAN begins calculating OEE from the next shift boundary and displays historical values once it accumulates at least one full shift of data.
+  </Step>
+  <Step title="Connect production counters (if available)">
+    For Quality and Performance calculations, TRACTIAN can ingest part counts from automated counters (PLC signals, SCADA exports) or accept manual entry by operators at shift end. In **Settings → OEE → Production Input**, choose **Automated** (configure the data source) or **Manual** (operators log units produced and defects in the TRACTIAN mobile app). Automated counters give you real-time OEE; manual entry updates OEE when the operator submits their shift log.
+  </Step>
+</Steps>
+
+## Reading OEE dashboards
+
+Open any OEE-enabled asset's dashboard or navigate to **Dashboards → OEE Overview** for a plant-wide view. The dashboard is organized into four sections:
+
+- **Plant OEE gauge** — A single percentage with a color band (green ≥ 85%, yellow 60–84%, red < 60%) showing the rolling OEE for the selected period across all tracked machines.
+- **OEE trend chart** — A daily or weekly time series of OEE and its three components. Hover over any data point to see the exact Availability, Performance, and Quality values for that day.
+- **Drill-down table** — A sortable table listing OEE by area and then by individual machine. Click any row to open that machine's detailed OEE dashboard.
+- **Current shift panel** — Live OEE for the shift in progress, updating every few minutes as new runtime and counter data arrives. Compare it to the same shift average from the prior 30 days.
+
+## Interpreting OEE scores
+
+Use these general benchmarks to contextualize your readings:
+
+| OEE range | Interpretation |
+|---|---|
+| **> 85%** | World-class performance. This is the aspirational target for most manufacturers. |
+| **60–85%** | Typical manufacturing range. There is meaningful room for improvement but the plant is functioning. |
+| **50–60%** | Below average. Significant losses are present in at least one component. Investigate immediately. |
+| **< 50%** | Needs immediate attention. This level usually indicates a systemic problem — sustained downtime, major quality issues, or severely reduced throughput. |
+
+<Note>
+  These benchmarks are general guidelines. Some industries (batch chemical, for example) operate at lower OEE by design. Compare your scores primarily against your own historical baseline and production targets rather than industry averages.
+</Note>
+
+## Losses analysis
+
+Low OEE always traces back to one or more of the **Six Big Losses** framework. TRACTIAN's losses breakdown panel (available in each machine's OEE detail view) categorizes recorded stops and throughput gaps into these buckets:
+
+| Loss category | Component affected | Examples |
+|---|---|---|
+| **Planned stops** | Availability | Scheduled maintenance, planned changeovers |
+| **Unplanned downtime** | Availability | Unexpected breakdowns, faults, emergency repairs |
+| **Reduced speed** | Performance | Running below rated speed due to wear or operator caution |
+| **Minor stops** | Performance | Short jams, sensor trips, manual interventions under 10 minutes |
+| **Startup losses** | Quality | Scrap and rework produced at startup before process stabilizes |
+| **Defects in process** | Quality | Out-of-spec parts produced during steady-state operation |
+
+Sort the losses table by **lost minutes** to find the single biggest drag on OEE. Focus improvement efforts there before addressing smaller losses.
+
+<Tip>
+  TRACTIAN's AI Insights are directly connected to your OEE losses. A bearing degradation insight, if left unaddressed, will eventually become an **unplanned downtime** event that collapses your Availability score. Reviewing and acting on open insights is one of the most effective ways to protect your OEE — treat the insight as an early warning before it becomes a loss.
+</Tip>

@@ -1,0 +1,132 @@
+---
+title: "Organize and Manage Your Industrial Asset Tree in TRACTIAN"
+sidebarTitle: "Asset Tree"
+description: "Create your plant's asset hierarchy in TRACTIAN — from company and plant level down to individual machines, components, and sensors."
+---
+
+The Asset Tree is your plant's digital backbone in TRACTIAN. By organizing every machine and component into a structured hierarchy, you give the platform the context it needs to surface the right alerts, assign work to the right teams, and generate meaningful reliability insights. A well-built asset tree also makes it faster for technicians to navigate equipment in the field and ensures that sensor data, inspection results, and failure records are always tied to the correct asset.
+
+## Asset hierarchy
+
+TRACTIAN uses a five-level hierarchy to represent your operation. Each level is a parent of the one below it, so every piece of data — sensor readings, health scores, work orders — rolls up cleanly to whatever level you're viewing.
+
+```
+Company
+└── Plant
+    └── Area
+        └── Machine
+            └── Component
+```
+
+| Level | Description | Example |
+|---|---|---|
+| **Company** | The top-level entity, usually your organization or business unit | Acme Manufacturing |
+| **Plant** | A physical facility or site | São Paulo Plant |
+| **Area** | A functional zone or production line within a plant | Compressor Room |
+| **Machine** | A piece of equipment within an area | Air Compressor #3 |
+| **Component** | A sub-element of a machine monitored individually | Drive-End Bearing |
+
+Start by building out your plant and area levels first, then add machines, and finally components. This top-down approach prevents orphaned assets and makes bulk imports easier to validate.
+
+## Adding assets
+
+<Tabs>
+  <Tab title="Manual">
+    Add assets one at a time directly from the web app — best for small additions or when you need to fill in detailed specs as you go.
+
+    <Steps>
+      <Step title="Open the Asset Tree">
+        In the left sidebar, navigate to **Assets** > **Asset Tree**. You'll see your current hierarchy displayed as a collapsible tree.
+      </Step>
+      <Step title="Select the parent level">
+        Click the level where you want to add a child. For example, click an **Area** to add a **Machine** under it. Then click **+ Add Asset**.
+      </Step>
+      <Step title="Fill in the asset details">
+        Enter the required fields — name, category, and criticality — plus any optional fields like manufacturer, model, and serial number. See the [Asset fields](#asset-fields) section below for a full list.
+      </Step>
+      <Step title="Assign sensors">
+        If TRACTIAN sensors are already installed on this asset, link them here. You can also add sensors later from the asset's detail page.
+      </Step>
+      <Step title="Save the asset">
+        Click **Save**. The new asset appears in the tree under its parent level.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Bulk Import">
+    Import dozens or hundreds of assets at once using a CSV file. This is the fastest way to get an existing asset list into TRACTIAN.
+
+    <Steps>
+      <Step title="Download the CSV template">
+        Go to **Assets** > **Asset Tree**, then click **Import** > **Download Template**. Open the file in Excel or Google Sheets.
+      </Step>
+      <Step title="Fill in your asset data">
+        Each row represents one asset. Required columns are marked in the template header. Make sure the **Parent** column references the exact name of the parent asset — this is how TRACTIAN builds the hierarchy from your flat list.
+      </Step>
+      <Step title="Upload the file">
+        Return to **Assets** > **Asset Tree** > **Import** and drag your completed CSV into the upload area, or click to browse. TRACTIAN validates the file and flags any rows with missing required fields or unresolved parent references.
+      </Step>
+      <Step title="Review and confirm">
+        Inspect the preview to confirm the hierarchy looks correct, then click **Confirm Import**. Assets are created immediately.
+      </Step>
+    </Steps>
+
+    <Note>
+      The CSV template version may be updated when new fields are added to TRACTIAN. Always download a fresh template rather than reusing an older one.
+    </Note>
+  </Tab>
+  <Tab title="Mobile App">
+    Use the TRACTIAN mobile app to add assets and scan QR codes directly on the shop floor — ideal when you're walking the plant during initial setup.
+
+    <Steps>
+      <Step title="Open the mobile app">
+        Log in to the TRACTIAN mobile app and tap **Assets** in the bottom navigation.
+      </Step>
+      <Step title="Navigate to the parent asset">
+        Browse the tree or use the search bar to find the parent level — for example, the area where you want to add a new machine.
+      </Step>
+      <Step title="Tap the add button">
+        Tap the **+** icon and select **Add Asset**. Fill in the asset name, category, and criticality level.
+      </Step>
+      <Step title="Scan or generate a QR code">
+        After saving, tap **Generate QR Code** to create a printable code for the asset. Attach it to the physical equipment so any technician can scan it to instantly navigate to the correct asset page.
+      </Step>
+    </Steps>
+
+    <Tip>
+      QR code scanning works both ways — you can also scan an existing code to jump straight to an asset's detail page, even if you don't know its name or location in the tree.
+    </Tip>
+  </Tab>
+</Tabs>
+
+## Asset fields
+
+Every asset in TRACTIAN has a set of fields that define it. Some fields are required at creation; others you can fill in later to enrich your asset register.
+
+| Field | Required | Description |
+|---|---|---|
+| **Name** | Yes | A clear, unique identifier for the asset (e.g., "Air Compressor #3") |
+| **Category** | Yes | The asset type, such as Motor, Pump, Fan, Compressor, or Conveyor |
+| **Manufacturer** | No | The equipment manufacturer (e.g., Siemens, WEG, SKF) |
+| **Model** | No | The specific model number or designation |
+| **Criticality** | Yes | How critical the asset is to production: Low, Medium, High, or Critical |
+| **Serial Number** | No | The asset's unique serial number from the manufacturer |
+| **Installation Date** | No | When the equipment was installed or put into service |
+
+<Tip>
+  Set criticality levels carefully. TRACTIAN uses criticality to weight alert thresholds, prioritize work orders, and sort assets in the health dashboard. A motor that stops your entire production line should be marked **Critical**, not **High** — even if it feels like an upgrade. Miscategorizing criticality is one of the most common sources of missed alerts.
+</Tip>
+
+## Asset GPT
+
+Asset GPT is TRACTIAN's AI-assisted autocomplete for asset specifications. When you type a manufacturer and model number, Asset GPT searches motor manuals, bearing catalogs, and equipment data sheets to suggest the correct technical parameters — rated power, RPM, bearing designations, lubrication intervals, and more.
+
+To use Asset GPT:
+
+1. Start adding or editing an asset and enter the **Manufacturer** and **Model** fields.
+2. Click **Auto-fill with Asset GPT**.
+3. Review the suggested values. Asset GPT will highlight fields it filled automatically.
+4. Confirm or adjust any values, then save.
+
+<Info>
+  Asset GPT works best for well-documented equipment from major manufacturers. For custom-built or heavily modified machines, review AI-suggested values carefully and supplement with your own documentation.
+</Info>
